@@ -1,0 +1,14 @@
+body{
+    color: white;
+    background-image: url('444.jpg');
+}
+input{
+    margin-bottom: 2rem;
+}
+header{
+    border-color: rgb(39, 62, 63);
+    margin-bottom: 3rem;
+}
+label{
+    color: rgb(79, 104, 104);
+}
