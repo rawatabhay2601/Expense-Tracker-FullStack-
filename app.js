@@ -3,12 +3,11 @@ const app = express();
 const sequelize = require('./util/database');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const signUpRoute = require('./routes/addUserSignup');
-const path = require('path');
+const signUpLoginRoute = require('./routes/SignupLogin');
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use(signUpRoute);
+app.use(signUpLoginRoute);
 
 sequelize.sync()
 .then(res => app.listen(3000))

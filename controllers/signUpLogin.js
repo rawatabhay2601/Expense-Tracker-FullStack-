@@ -19,19 +19,18 @@ exports.LogInUser = async (req,res,next) => {
     const password = req.body.password;
 
     const response = await Users.findOne({
-        where : {
-            [Op.and] : [
-                {email:email},
-                {password:password}
-        ]}
+        where : {email:email}
     });
 
     if(!response){
-        console.log('No such user exists !!!');
+        res.status(404).json({UserDetails:"No Such User Exists !!"})
     }
     else{
-        console.log('User Exists !!!');
+        if(response.dataValues.password == password){
+            res.status(201).json({UserDetails:"User Login Successfully !!"})
+        }
+        else{
+            res.status(401).json({UserDetails:"Incorrect Password"})
+        }
     }
-    res.status(201).json({UserDetails:response});
 };
-
