@@ -5,7 +5,6 @@ async function signupSubmit(e){
     
     e.preventDefault();
     
-    let id; 
     const email = document.getElementById('email').value;
     const name = document.getElementById('name').value;
     const password = document.getElementById('password').value;
