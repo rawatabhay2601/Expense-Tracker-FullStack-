@@ -7,6 +7,7 @@ const signUpLoginRoute = require('./routes/SignupLogin');
 
 app.use(cors());
 app.use(bodyParser.json());
+
 app.use(signUpLoginRoute);
 
 sequelize.sync()

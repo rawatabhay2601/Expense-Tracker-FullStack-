@@ -16,11 +16,10 @@ async function loginSubmit(e){
 
     try{
         const res = await axios.post('http://localhost:3000/LogInUser',obj);
-        id = res.data.UserDetails.id;
+        id = res.data.message.id;
         console.log(res);
     }
     catch(err){
         console.log(err);
     }
-
 };
