@@ -52,23 +52,21 @@ exports.LogInUser = async (req,res,next) => {
     const response = await Users.findOne({
         where : {email:email}
     });
-    //  IF USER EXISTS
+    //  IF NO USER EXISTS
     if(!response){
-        res.status(404).json({message:"No Such User Exists !!"})
+        return res.status(404).json({message:"No Such User Exists !!"})
     }
-
     else{
         bcrypt.compare(password, response.dataValues.password, (error, result) => {
 
             // IF PASSWORDS IS CORRECT 
             if(result){
-                res.status(201).json({message:"User Login Successfully !!"})
+                return res.status(201).json({message:"User Login Successfully !!"});
             }
             // IF PASSWORDS IS INCORRECT
             else{
-                res.status(401).json({message:"Incorrect Password !!"})
+                return res.status(401).json({message:"Incorrect Password !!"});
             }
-            // console.log(result);
         })
     }
 };

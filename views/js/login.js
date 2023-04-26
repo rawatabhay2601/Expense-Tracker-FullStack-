@@ -16,8 +16,8 @@ async function loginSubmit(e){
 
     try{
         const res = await axios.post('http://localhost:3000/user/loginUser',obj);
-        id = res.data.message.id;
-        console.log(res);
+        console.log("Response : ",res);
+        window.location.href = "../html/expense-form.html";
     }
     catch(err){
         console.log(err);
