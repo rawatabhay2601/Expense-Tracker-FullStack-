@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" 
+    rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" 
+    crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" 
+    integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" 
+    crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <link rel="stylesheet" href="../../public/css/expense-form.css">
+    <!-- <link rel="stylesheet" href="../../public/css/main.css"> -->
+
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-md">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"><h2>Day-to-Day Expense</h2></a>
+            <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mx-auto" >
+
+                    <!-- <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#" >Daily</a>
+                    </li>
+
+                    <li class="nav-item">
+                    <a class="nav-link" href="#">Weekly</a>
+                    </li>
+
+                    <li class="nav-item">
+                    <a class="nav-link" href="#">Monthly</a>
+                    </li> -->
+                </ul>
+ 
+                <form class="d-flex">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-secondary" type="submit" style="height: 35px;">Search</button>
+                </form>     
+
+            </div>
+        </div>
+    </nav>
+
+    <!-- EXPENSE BODY -->
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h4>Expenses :</h4>
+            </div>
+            <div class="card-body">
+                <ul class="vstack" id="expenseParentTag">
+
+                    <!-- this will be repeated
+                    <div class="row" id="addExpense">
+                        <div class="col" style="background-color: rgb(203, 214, 214);border-color: black;">Amount</div>
+                        <div class="col" style="background-color: rgb(130, 159, 160);">Description</div>
+                        <div class="col" style="background-color: rgb(203, 214, 214);">Category</div>
+                        <div class="col-1">
+                            <button type="button" hidden="hidden">Edit</button>
+                            <button type="button" hidden="hidden">X</button>
+                        </div>
+                    </div> -->
+                    <!-- this will be repeated -->
+                    
+                </ul>
+            </div>
+            <div class="card-footer"></div>
+        </div>
+    </div>
+
+    <!-- THE ADD EXPENSE BUTTON -->
+    <div class="container" style="position: absolute; right: 0;bottom: 0;">
+        <div class="row">
+            <div class="col" style="text-align: end; margin: auto;">
+                <label>Add Expenses : </label>
+                <button type="button" id="createExpense" class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#modal"><h4>+</h4></button>
+            </div>   
+        </div>
+    </div>
+
+    <!-- THE MODAL FOR ADDING EXPENSE -->
+    <div class="modal fade modal-fullscreen-md-down" id="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header"><h3 style="color: black;">Create Expense</h3></div>
+                <div class="modal-body">
+                    <form id="createExpenseForm">
+                        <div class="form-floating" >
+                            <input type="number" name='amount' class="form-control" id="amount" placeholder="Add Expense here" required>
+                            <label for="number">Amount</label>
+                        </div>
+                        <div class="form-floating">
+                            <input type='text' name='description' class="form-control" id="description" placeholder="Place description here" required>
+                            <label for='description'>Description</label>
+                        </div>
+                        <div class="conatiner">
+                            <label class="form-label">Type of Expense</label>
+                            <select name="dropdown" id="type" class="form-select" aria-placeholder="Type of Expense">
+                                <option>Food</option>
+                                <option>Fuel</option>
+                                <option>House Maintainence</option>
+                                <option>Travel</option>
+                                <option>Electronics</option>
+                                <option>Clothes</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-secondary" id="submit">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src='../js/expense-form.js'></script>
+</body>
+</html>

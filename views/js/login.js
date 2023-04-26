@@ -15,7 +15,7 @@ async function loginSubmit(e){
     }
 
     try{
-        const res = await axios.post('http://localhost:3000/LogInUser',obj);
+        const res = await axios.post('http://localhost:3000/user/loginUser',obj);
         id = res.data.message.id;
         console.log(res);
     }

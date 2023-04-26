@@ -1,0 +1,43 @@
+.card{
+    background-color: white;
+    margin: auto;
+    margin-top: 2rem;
+    max-width:60rem
+}
+.card-header, .card-footer{
+    background-color: cadetblue;
+    width: 100%;
+}
+label{
+    color: black;
+    font-weight: 600;
+    font-size: large;
+}
+#createExpense{
+    border-radius: 50%; 
+    text-align: center;
+}
+li{
+    font-size: large;
+}
+div.modal-header{
+    background-color: cadetblue;
+}
+#submit{
+    margin-top: 1rem;
+}
+#addExpense{
+    font-size: large;
+    font-weight: 600;
+    width: 100%;
+    text-align: center;
+    margin-top: 0.2rem;
+    margin-bottom: 0.2rem;
+}
+body{
+    color: white;
+    background-image: url('../../views/images/444.jpg');
+}
+nav{
+    background-color: cadetblue;
+}
