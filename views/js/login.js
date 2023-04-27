@@ -2,7 +2,6 @@ const btn = document.getElementById('loginform');
 btn.addEventListener('submit',loginSubmit);
 
 async function loginSubmit(e){
-
     e.preventDefault();
 
     let id;
@@ -13,10 +12,11 @@ async function loginSubmit(e){
         email,
         password
     }
-
+ 
     try{
         const res = await axios.post('http://localhost:3000/user/loginUser',obj);
-        console.log("Response : ",res);
+        id = res.data.token;
+        localStorage.setItem('id',id.toString());
         window.location.href = "../html/expense-form.html";
     }
     catch(err){

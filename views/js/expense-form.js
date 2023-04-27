@@ -1,11 +1,11 @@
 const form = document.getElementById("createExpenseForm");
-
 form.addEventListener('submit', creatingExpense);
 
 async function creatingExpense(e){
     e.preventDefault();
 
-    let id; 
+    let expenseId;
+    const token = localStorage.getItem('id');
     const amount = document.getElementById('amount').value;
     const description = document.getElementById('description').value;
     const type = document.getElementById('type').value;
@@ -13,13 +13,12 @@ async function creatingExpense(e){
 
     const obj ={
         amount,description,type
-    }
+    };
     
     try{
-        const response =await axios.post("http://localhost:3000/expense/addExpense",obj);
-        id = response.data.message.id;
-        console.log(response);
-
+        const response = await axios.post("http://localhost:3000/expense/addExpense",obj, {headers : {'Authorization' : token}});
+        expenseId = response.data.success.id;
+        // console.log(response);
     }
     catch(err){
         console.log(err);
@@ -44,12 +43,12 @@ async function creatingExpense(e){
     del.appendChild(delData);
 
     // EDIT BUTTON
-    const edit = document.createElement("btn");
-    const editData = document.createTextNode("Edit");
-    edit.className = "btn btn-success  float-end";
-    edit.appendChild(editData);
+    // const edit = document.createElement("btn");
+    // const editData = document.createTextNode("Edit");
+    // edit.className = "btn btn-success  float-end";
+    // edit.appendChild(editData);
     
-    liTag.appendChild(edit);
+    // liTag.appendChild(edit);
     liTag.appendChild(del);
 
     div.appendChild(liTag);
@@ -62,15 +61,15 @@ async function creatingExpense(e){
 
         try {
             // using axios to push data to CrudCrud
-            const response = await axios.get(`http://localhost:3000/expense/deleteExpense/${id}`);
+            const response = await axios.get(`http://localhost:3000/expense/deleteExpense/${expenseId}`);
             console.log(response);
-            
         }
         catch(err){
             document.body.innerHTML = "<h2 style='color:red; text-align:center'>Something went wrong</h2>";
             console.error(err);
         }
 
+        // removing from the UI
         parentTag.removeChild(e.target.parentElement.parentElement);
     }
 };
@@ -78,9 +77,10 @@ async function creatingExpense(e){
 window.addEventListener('DOMContentLoaded',async () => {
 
     const parentTag = document.getElementById('expenseParentTag');
-
+    const token = localStorage.getItem('id');
+    
     try{
-        const response = await axios.get('http://localhost:3000/expense/getAllExpenses');
+        const response = await axios.get('http://localhost:3000/expense/getAllExpenses', { headers : {'Authorization' : token} });
 
         for(let entry of response.data.success){
             
@@ -104,12 +104,12 @@ window.addEventListener('DOMContentLoaded',async () => {
             del.appendChild(delData);
 
             // EDIT BUTTON
-            const edit = document.createElement("btn");
-            const editData = document.createTextNode("Edit");
-            edit.className = "btn btn-success  float-end";
-            edit.appendChild(editData);
+            // const edit = document.createElement("btn");
+            // const editData = document.createTextNode("Edit");
+            // edit.className = "btn btn-success  float-end";
+            // edit.appendChild(editData);
             
-            liTag.appendChild(edit);
+            // liTag.appendChild(edit);
             liTag.appendChild(del);
 
             div.appendChild(liTag);

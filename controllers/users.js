@@ -1,19 +1,24 @@
-const { Op } = require('sequelize');
 const Users = require('../models/users');
 const bcrypt = require('bcrypt');
-const { error } = require('console');
+const jwt = require('jsonwebtoken');
+const encryptionKey = 'ijuht76gbhcqr480oklmnhgcr26';
+
+function isvalidString(str){
+    if(str.length == 0 || str == undefined){
+        return false;
+    }
+    else{
+        return true;
+    }
+}
+
+function generatetokenAccess(user){
+    const userId = user
+    return jwt.sign({userId : userId}, encryptionKey);
+}
 
 // with this we are adding User from the Sign-Up page
 exports.addUser = async (req,res,next) => {
-
-    function isvalidString(str){
-        if(str.length == 0 || str == undefined){
-            return false;
-        }
-        else{
-            return true;
-        }
-    }
 
     const name = req.body.name;
     const email = req.body.email;
@@ -24,9 +29,11 @@ exports.addUser = async (req,res,next) => {
 
         // ask doubts here
         bcrypt.hash(password, saltrounds, async (error , hashPass) => {
+
             if(error){
-                return console.error(error);
+                return console.log(error);
             }
+
             try{
                 const response = await Users.create({name:name,email:email,password:hashPass});
                 return res.status(201).json({success:response});
@@ -52,6 +59,7 @@ exports.LogInUser = async (req,res,next) => {
     const response = await Users.findOne({
         where : {email:email}
     });
+
     //  IF NO USER EXISTS
     if(!response){
         return res.status(404).json({message:"No Such User Exists !!"})
@@ -61,7 +69,7 @@ exports.LogInUser = async (req,res,next) => {
 
             // IF PASSWORDS IS CORRECT 
             if(result){
-                return res.status(201).json({message:"User Login Successfully !!"});
+                return  res.status(201).json({message:"User Login Successfully !!", success:response , token:generatetokenAccess(response.dataValues.id)});
             }
             // IF PASSWORDS IS INCORRECT
             else{
