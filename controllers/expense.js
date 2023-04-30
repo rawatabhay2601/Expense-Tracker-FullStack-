@@ -19,7 +19,7 @@ exports.addExpense = async(req,res,next) => {
     try{
         if( isvalidString(amount) && isvalidString(description) && isvalidString(type) && isvalidString(userId)){
 
-            const response = await Expense.create({amount:amount,description:description,type:type, userId:userId});
+            const response = await Expense.create({amount:amount, description:description, type:type, userId:userId});
             return res.status(201).json({success:response});
         }
         else{
@@ -31,13 +31,16 @@ exports.addExpense = async(req,res,next) => {
     }
 };
 
+
 exports.getAllExpenses = async(req,res,next) => {
 
     const userId = req.user.dataValues.id;
+    const ispremium = req.user.dataValues.ispremium;
+
     try{
         // response is an array
         const response = await Expense.findAll({ where : {userId : userId} });
-        return res.status(201).json({success:response});
+        return res.status(201).json({success:response, ispremium : ispremium});
     }
     catch(err){
         console.log(err);

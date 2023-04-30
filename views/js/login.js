@@ -12,7 +12,7 @@ async function loginSubmit(e){
         email,
         password
     }
- 
+
     try{
         const res = await axios.post('http://localhost:3000/user/loginUser',obj);
         id = res.data.token;

@@ -1,7 +1,7 @@
 const form = document.getElementById("createExpenseForm");
 form.addEventListener('submit', creatingExpense);
 
-async function creatingExpense(e){
+async function creatingExpense(e) {
     e.preventDefault();
 
     let expenseId;
@@ -42,13 +42,6 @@ async function creatingExpense(e){
     del.className = "btn btn-danger  float-end";
     del.appendChild(delData);
 
-    // EDIT BUTTON
-    // const edit = document.createElement("btn");
-    // const editData = document.createTextNode("Edit");
-    // edit.className = "btn btn-success  float-end";
-    // edit.appendChild(editData);
-    
-    // liTag.appendChild(edit);
     liTag.appendChild(del);
 
     div.appendChild(liTag);
@@ -78,9 +71,17 @@ window.addEventListener('DOMContentLoaded',async () => {
 
     const parentTag = document.getElementById('expenseParentTag');
     const token = localStorage.getItem('id');
+    const premiumBtn = document.getElementById('premiumUser').parentElement;
+    const premiumMsg = document.getElementById('isPremium');
     
     try{
         const response = await axios.get('http://localhost:3000/expense/getAllExpenses', { headers : {'Authorization' : token} });
+        const ispremium = response.data.ispremium;
+
+        if(ispremium == true){
+            premiumBtn.remove();
+            premiumMsg.textContent = 'Premium User';
+        }
 
         for(let entry of response.data.success){
             
@@ -103,13 +104,6 @@ window.addEventListener('DOMContentLoaded',async () => {
             del.className = "btn btn-danger  float-end";
             del.appendChild(delData);
 
-            // EDIT BUTTON
-            // const edit = document.createElement("btn");
-            // const editData = document.createTextNode("Edit");
-            // edit.className = "btn btn-success  float-end";
-            // edit.appendChild(editData);
-            
-            // liTag.appendChild(edit);
             liTag.appendChild(del);
 
             div.appendChild(liTag);
@@ -139,3 +133,52 @@ window.addEventListener('DOMContentLoaded',async () => {
         console.log(err);
     }
 });
+
+
+// FOR ORDERS
+document.getElementById('premiumUser').onclick = async(e) => {
+
+    const premiumBtn = document.getElementById('premiumUser');
+    const premiumMsg = document.getElementById('isPremium');
+    const token = localStorage.getItem('id');
+
+    const response = await axios.get('http://localhost:3000/purchase/premiumMembership', {
+        headers : {'Authorization': token}
+    });
+
+    console.log('Response from 1st request : ',response);
+    var options = {
+        'key' : response.data.key_id,
+        'order_id': response.data.order.id,
+        'handler' : async function(response){
+
+            await axios.post('http://localhost:3000/purchase/updateTranscationStatus', {
+                order_id:options.order_id,
+                payment_id: response.razorpay_payment_id,
+            }, {headers : {'Authorization' : token} });
+
+            premiumBtn.parentElement.remove();    // removing premium button
+            premiumMsg.textContent = 'Premium User'; 
+
+            alert('You are a Premium User Now !!');
+        }
+    }
+
+    const rzp1 = new Razorpay(options);
+    rzp1.open();
+    e.preventDefault(); //why is this used
+
+    rzp1.on('payment.failed', async (response) => {
+        console.log('Payment failed : ',response.error.metadata.order_id);
+        // console.log('Payment failed : ',response.metadata.payment_id);
+        await axios.post('http://localhost:3000/purchase/failedTransaction', {
+
+            order_id:response.error.metadata.order_id,
+            payment_id: response.error.metadata.payment_id
+
+        }, { headers : {'Authorization' : token} });
+
+        alert('Something went wrong !!');
+        rzp1.close();
+    });
+};
