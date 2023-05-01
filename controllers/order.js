@@ -1,8 +1,8 @@
 const Order = require("../models/order");
 const Razorpay = require('razorpay');
 
-const RAZORPAY_KEY_ID = 'rzp_test_5mZ3wpfgVhSQRz';
-const RAZORPAY_KEY_SECRET = 'bRwLpAxMw4aup1CtZJdBpaWQ';
+const RAZORPAY_KEY_ID = 'rzp_test_HXW5ZPWe5Uq2T8';
+const RAZORPAY_KEY_SECRET = 'El1JWcb2iRRGardAxbTSv9Tf';
 
 exports.purchasePremium = async (req,res) => {
 
@@ -24,8 +24,9 @@ exports.purchasePremium = async (req,res) => {
             catch(err){
                 console.log(err);
             }
-        })
+        });
     }
+    
     catch(err){
         console.log(err);
         res.status(403).json({message : 'Something went wrong', error : err});

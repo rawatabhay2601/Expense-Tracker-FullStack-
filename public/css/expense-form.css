@@ -1,13 +1,3 @@
-.card{
-    background-color: white;
-    margin: auto;
-    margin-top: 2rem;
-    max-width:60rem
-}
-.card-header, .card-footer{
-    background-color: cadetblue;
-    width: 100%;
-}
 label{
     color: black;
     font-weight: 600;
@@ -40,4 +30,7 @@ body{
 }
 nav{
     background-color: cadetblue;
+}
+#leadersboard{
+    margin-top: 3rem;
 }

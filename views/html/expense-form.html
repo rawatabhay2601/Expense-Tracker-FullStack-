@@ -29,57 +29,48 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mx-auto" >
-
-                    <!-- <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#" >Daily</a>
-                    </li>
-
-                    <li class="nav-item">
-                    <a class="nav-link" href="#">Weekly</a>
-                    </li>
-
-                    <li class="nav-item">
-                    <a class="nav-link" href="#">Monthly</a>
-                    </li> -->
-                    <li class="nav-item">
-                        <h4 id="isPremium" style="color: rgb(194, 145, 23);"><h4>
+                    <li class="nav-item" id="premiumUserMsg" style="display: none;">
+                        <h4 style="color: rgb(0, 0, 0);">Premium User</h4>
+                        <button class="btn btn-light"c id="showleaders">Show Leadersboard</button>
                     </li>
                 </ul>
  
                 <form class="d-flex">
                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-secondary" type="submit" style="height: 35px;">Search</button>
-                </form>     
-
+                </form>
             </div>
         </div>
     </nav>
 
     <!-- EXPENSE BODY -->
     <div class="container">
-        <div class="card">
-            <div class="card-header">
-                <h4>Expenses :</h4>
-            </div>
-            <div class="card-body">
-                <ul class="vstack" id="expenseParentTag">
+            <!-- FOR EXPENSES -->
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Category</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody id="table-body-expense"></tbody>
+        </table>
+    </div>
 
-                    <!-- this will be repeated
-                    <div class="row" id="addExpense">
-                        <div class="col" style="background-color: rgb(203, 214, 214);border-color: black;">Amount</div>
-                        <div class="col" style="background-color: rgb(130, 159, 160);">Description</div>
-                        <div class="col" style="background-color: rgb(203, 214, 214);">Category</div>
-                        <div class="col-1">
-                            <button type="button" hidden="hidden">Edit</button>
-                            <button type="button" hidden="hidden">X</button>
-                        </div>
-                    </div> -->
-                    <!-- this will be repeated -->
-                    
-                </ul>
-            </div>
-            <div class="card-footer"></div>
-        </div>
+    <div class="container" >
+        <!-- FOR LEADERBOARD -->
+        <table class="table table-hover" id="leadersboard" style="display: none;">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Expense</th>
+                </tr>
+            </thead>
+            <tbody id="table-body-leader"></tbody>
+        </table>
     </div>
 
     <!-- THE ADD EXPENSE BUTTON -->
@@ -97,7 +88,7 @@
         <div class="row">
             <div class="col" style="text-align: start; margin: auto;">
                 <label>Premium : </label>
-                <button type="button" id="premiumUser" class="btn btn-success" >Buy</button>
+                <button type="button" id="premiumUser" class="btn btn-success">Buy</button>
             </div>
         </div>
     </div>
@@ -113,11 +104,13 @@
                             <input type="number" name='amount' class="form-control" id="amount" placeholder="Add Expense here" required>
                             <label for="number">Amount</label>
                         </div>
+
                         <div class="form-floating" style = "margin: 0.5rem;">
                             <input type='text' name='description' class="form-control" id="description" placeholder="Place description here" required>
                             <label for='description'>Description</label>
                         </div>
-                        <div class="conatiner">
+
+                        <div class="container">
                             <label class="form-label">Type of Expense</label>
                             <select name="dropdown" id="type" class="form-select" aria-placeholder="Type of Expense">
                                 <option>Food</option>
@@ -128,6 +121,7 @@
                                 <option>Clothes</option>
                             </select>
                         </div>
+
                         <button type="submit" class="btn btn-secondary" id="submit">Submit</button>
                     </form>
                 </div>
@@ -136,5 +130,6 @@
     </div>
     <script src='../js/expense-form.js'></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src = '../js/leadersboard.js'></script>
 </body>
 </html>

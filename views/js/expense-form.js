@@ -1,5 +1,8 @@
 const form = document.getElementById("createExpenseForm");
+
+
 form.addEventListener('submit', creatingExpense);
+let rowCount = 0;
 
 async function creatingExpense(e) {
     e.preventDefault();
@@ -9,7 +12,7 @@ async function creatingExpense(e) {
     const amount = document.getElementById('amount').value;
     const description = document.getElementById('description').value;
     const type = document.getElementById('type').value;
-    const parentTag = document.getElementById('expenseParentTag');
+    const parentTagRow = document.getElementById('table-body-expense');
 
     const obj ={
         amount,description,type
@@ -24,30 +27,41 @@ async function creatingExpense(e) {
         console.log(err);
     }
     
-    const liTag = document.createElement('li');
-    const data = document.createTextNode(amount + " : " + description + " : " + type);
+    increaseCount();
 
-    liTag.className = "card-body";
-    liTag.style = "background-color: rgb(203, 214, 214);";
-    liTag.appendChild(data);
+    // creating tags
+    const th = document.createElement('th');
+    const tdAmount= document.createElement('td');
+    const tdDescription = document.createElement('td');
+    const tdCategory = document.createElement('td');
+    const tdButton = document.createElement('td');
 
+    // adding data to the rows
+    th.scope = "row";
+    th.textContent = rowCount;
+    tdAmount.textContent = amount;
+    tdDescription.textContent = description;
+    tdCategory.textContent = type;
+    
     // creating parent tag
-    const div = document.createElement('div');
-    div.id = 'addExpense';
-    div.className = 'card';
+    const tr = document.createElement('tr');
+    tr.appendChild(th);
+    tr.appendChild(tdAmount);
+    tr.appendChild(tdCategory);
+    tr.appendChild(tdDescription);
 
     // DELETE BUTTON
     const del = document.createElement("btn");
     const delData = document.createTextNode("X");
-    del.className = "btn btn-danger  float-end";
+    del.className = "btn btn-outline-danger";
     del.appendChild(delData);
 
-    liTag.appendChild(del);
+    // adding button to parent tag
+    tdButton.appendChild(del);
+    tr.appendChild(tdButton);
 
-    div.appendChild(liTag);
-
-    // adding to parent tag
-    parentTag.appendChild(div);
+    // adding to the whole row to the table
+    parentTagRow.appendChild(tr);
 
     // deleting li tag
     del.onclick = async (e) => {
@@ -58,74 +72,106 @@ async function creatingExpense(e) {
             console.log(response);
         }
         catch(err){
-            document.body.innerHTML = "<h2 style='color:red; text-align:center'>Something went wrong</h2>";
-            console.error(err);
+            alert('Something went wrong')
+            console.log(err);
         }
+        // decreasing count
+        decreaseCount();
 
         // removing from the UI
-        parentTag.removeChild(e.target.parentElement.parentElement);
+        e.target.parentElement.parentElement.remove();
     }
+};
+
+
+
+function increaseCount(){
+    rowCount++;
+};
+
+function decreaseCount(){
+    rowCount--;
+};
+
+function resetCount(){
+    rowCount = 0;
 };
 
 window.addEventListener('DOMContentLoaded',async () => {
 
-    const parentTag = document.getElementById('expenseParentTag');
     const token = localStorage.getItem('id');
     const premiumBtn = document.getElementById('premiumUser').parentElement;
-    const premiumMsg = document.getElementById('isPremium');
-    
+    const parentTagRow = document.getElementById('table-body-expense');
+    const premiumParent = document.getElementById("premiumUserMsg");
+
     try{
         const response = await axios.get('http://localhost:3000/expense/getAllExpenses', { headers : {'Authorization' : token} });
         const ispremium = response.data.ispremium;
-
+        localStorage.setItem('isPremium',ispremium);
         if(ispremium == true){
+            premiumParent.style = 'block'; 
             premiumBtn.remove();
-            premiumMsg.textContent = 'Premium User';
         }
 
-        for(let entry of response.data.success){
-            
-            // creating tags
-            const liTag = document.createElement('li');
-            const data = document.createTextNode(entry.amount + " : " + entry.description + " : " + entry.type);
+        // resetting the row count to zero
+        resetCount();
 
-            liTag.className = "card-body";
-            liTag.style = "background-color: rgb(203, 214, 214);";
-            liTag.appendChild(data);
+        for(let entry of response.data.success){
+
+            // increasing count for the row
+            increaseCount(); 
+
+            // creating tags
+            const th = document.createElement('th');
+            const tdAmount= document.createElement('td');
+            const tdDescription = document.createElement('td');
+            const tdCategory = document.createElement('td');
+            const tdButton = document.createElement('td');
+
+            // adding data to the rows
+            th.scope = "row";
+            th.textContent = rowCount;
+            tdAmount.textContent = entry.amount;
+            tdDescription.textContent = entry.description;
+            tdCategory.textContent = entry.type;
 
             // creating parent tag
-            const div = document.createElement('div');
-            div.id = 'addExpense';
-            div.className = 'card';
+            const tr = document.createElement('tr');
+            tr.appendChild(th);
+            tr.appendChild(tdAmount);
+            tr.appendChild(tdCategory);
+            tr.appendChild(tdDescription);
 
             // DELETE BUTTON
             const del = document.createElement("btn");
             const delData = document.createTextNode("X");
-            del.className = "btn btn-danger  float-end";
+            del.className = "btn btn-outline-danger";
             del.appendChild(delData);
 
-            liTag.appendChild(del);
+            // adding button to parent tag
+            tdButton.appendChild(del);
+            tr.appendChild(tdButton);
 
-            div.appendChild(liTag);
-
-            // adding to parent tag
-            parentTag.appendChild(div);
+            // adding to the whole row to the table
+            parentTagRow.appendChild(tr);
 
             // deleting li tag
             del.onclick = async (e) => {
 
                 try {
-                    // using axios to push data to CrudCrud
+                    // using axios to push data to backend
                     const response = await axios.get(`http://localhost:3000/expense/deleteExpense/${entry.id}`);
                     console.log(response);
-                    
                 }
                 catch(err){
-                    document.body.innerHTML = "<h2 style='color:red; text-align:center'>Something went wrong</h2>";
-                    console.error(err);
+                    alert('Something went wrong !!')
+                    console.log(err);
                 }
 
-                parentTag.removeChild(e.target.parentElement.parentElement);
+                e.target.parentElement.parentElement.remove();
+
+                // decrease count
+                decreaseCount();
             }
         }
     }
@@ -135,7 +181,7 @@ window.addEventListener('DOMContentLoaded',async () => {
 });
 
 
-// FOR ORDERS
+// FOR ORDERS RAZORPAY
 document.getElementById('premiumUser').onclick = async(e) => {
 
     const premiumBtn = document.getElementById('premiumUser');
@@ -158,7 +204,7 @@ document.getElementById('premiumUser').onclick = async(e) => {
             }, {headers : {'Authorization' : token} });
 
             premiumBtn.parentElement.remove();    // removing premium button
-            premiumMsg.textContent = 'Premium User'; 
+            premiumMsg.textContent = 'Premium User';   //adding message
 
             alert('You are a Premium User Now !!');
         }
