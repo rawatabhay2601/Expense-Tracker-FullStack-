@@ -1,6 +1,7 @@
 const Users = require('../models/users');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const sequelize = require('../util/database');
 const encryptionKey = 'ijuht76gbhcqr480oklmnhgcr26';
 
 function isvalidString(str){
@@ -26,7 +27,6 @@ exports.addUser = async (req,res,next) => {
 
     if( isvalidString(name) && isvalidString(email) && isvalidString(password) ){
         const saltrounds = 10;
-
         // ask doubts here
         bcrypt.hash(password, saltrounds, async (error , hashPass) => {
 
@@ -36,10 +36,11 @@ exports.addUser = async (req,res,next) => {
 
             try{
                 const response = await Users.create({name:name,email:email,password:hashPass});
-                return res.status(201).json({success:response});
+
+                return res.status(201).json({success:response, message:'Successful'});
             }
             catch(err){
-                return res.status(500).json(err);
+                return res.status(500).json({success:err,message:'Failed'});
             }
         });
     }
