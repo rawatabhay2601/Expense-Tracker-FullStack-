@@ -68,11 +68,11 @@ async function creatingExpense(e) {
 
         try {
             // using axios to push data to CrudCrud
-            const response = await axios.get(`http://localhost:3000/expense/deleteExpense/${expenseId}`);
+            const response = await axios.get(`http://localhost:3000/expense/deleteExpense/${expenseId}`, { headers : {'Authorization' : token} });
             console.log(response);
         }
         catch(err){
-            alert('Something went wrong')
+            alert('Something went wrong : delete button')
             console.log(err);
         }
         // decreasing count
@@ -106,12 +106,18 @@ window.addEventListener('DOMContentLoaded',async () => {
 
     try{
         const response = await axios.get('http://localhost:3000/expense/getAllExpenses', { headers : {'Authorization' : token} });
+        
+        
+        // ----------------------------------------------------------
+        // check if this is required or not 
         const ispremium = response.data.ispremium;
         localStorage.setItem('isPremium',ispremium);
         if(ispremium == true){
             premiumParent.style = 'block'; 
             premiumBtn.remove();
         }
+        // ----------------------------------------------------------
+
 
         // resetting the row count to zero
         resetCount();
@@ -160,7 +166,7 @@ window.addEventListener('DOMContentLoaded',async () => {
 
                 try {
                     // using axios to push data to backend
-                    const response = await axios.get(`http://localhost:3000/expense/deleteExpense/${entry.id}`);
+                    const response = await axios.get(`http://localhost:3000/expense/deleteExpense/${entry.id}`, { headers : {'Authorization' : token} });
                     console.log(response);
                 }
                 catch(err){
@@ -185,7 +191,7 @@ window.addEventListener('DOMContentLoaded',async () => {
 document.getElementById('premiumUser').onclick = async(e) => {
 
     const premiumBtn = document.getElementById('premiumUser');
-    const premiumMsg = document.getElementById('isPremium');
+    const premiumMsg= document.getElementById('premiumUserMsg');
     const token = localStorage.getItem('id');
 
     const response = await axios.get('http://localhost:3000/purchase/premiumMembership', {
@@ -204,7 +210,8 @@ document.getElementById('premiumUser').onclick = async(e) => {
             }, {headers : {'Authorization' : token} });
 
             premiumBtn.parentElement.remove();    // removing premium button
-            premiumMsg.textContent = 'Premium User';   //adding message
+            premiumMsg.style = "display:block";   // making message and button visible
+            localStorage.setItem('isPremium','true'); // adding message to the local Storage
 
             alert('You are a Premium User Now !!');
         }
@@ -215,8 +222,8 @@ document.getElementById('premiumUser').onclick = async(e) => {
     e.preventDefault(); //why is this used
 
     rzp1.on('payment.failed', async (response) => {
-        console.log('Payment failed : ',response.error.metadata.order_id);
-        // console.log('Payment failed : ',response.metadata.payment_id);
+        
+        
         await axios.post('http://localhost:3000/purchase/failedTransaction', {
 
             order_id:response.error.metadata.order_id,
@@ -227,4 +234,5 @@ document.getElementById('premiumUser').onclick = async(e) => {
         alert('Something went wrong !!');
         rzp1.close();
     });
+
 };

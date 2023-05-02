@@ -1,21 +1,4 @@
-// document.getElementById('showleaders').onclick = async() => {
-window.addEventListener('DOMContentLoaded',async () => {
-
-    const isPremium = localStorage.getItem('isPremium');
-    if(isPremium){
-        createLeadersTable();
-    }
-    
-    // // creating parent tag
-    // const tr = document.createElement('tr');
-    // tr.appendChild(th);
-    // tr.appendChild(tdAmount);
-    // tr.appendChild(tdCategory);
-    // tr.appendChild(tdDescription);
-
-});
-
-async function createLeadersTable(){
+document.getElementById('showleaders').onclick = async() => {
 
     let response;
     const leaderTable = document.getElementById('leadersboard');
@@ -44,4 +27,6 @@ async function createLeadersTable(){
     catch(err){
         console.log(err);
     }
-}
+    
+};
+
