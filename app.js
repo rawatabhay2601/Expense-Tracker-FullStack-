@@ -16,6 +16,7 @@ const orderRoute = require('./routes/orderRoute');
 const leaderboardRoute = require('./routes/leadersboardRoute');
 const userRoute = require('./routes/userRoutes');
 const expenseRoute = require('./routes/expenseRoutes');
+const forgotPassword = require('./routes/forgotPassword')
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -24,6 +25,7 @@ app.use(userRoute);
 app.use(expenseRoute);
 app.use(orderRoute);
 app.use(leaderboardRoute);
+app.use(forgotPassword);
 
 Users.hasMany(Expense);
 Expense.belongsTo(Users);
