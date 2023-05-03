@@ -43,12 +43,11 @@ exports.addExpense = async(req,res,next) => {
     else{
         return res.status(500).json({message:'Invalid Input Values !!'});
     }
-    
 };
 
 
 exports.getAllExpenses = async(req,res,next) => {
-    
+
     const userId = req.user.dataValues.id;
     const ispremium = req.user.dataValues.ispremium;
 

@@ -2,7 +2,7 @@ const Users = require('../models/users');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const sequelize = require('../util/database');
-const encryptionKey = 'ijuht76gbhcqr480oklmnhgcr26';
+const encryptionKey = 'ijuht76gbhcqr480oklmnhgcr26'; //used by jwt
 
 function isvalidString(str){
     if(str.length == 0 || str == undefined){
