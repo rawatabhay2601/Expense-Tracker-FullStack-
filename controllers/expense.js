@@ -46,15 +46,33 @@ exports.addExpense = async(req,res,next) => {
 };
 
 
-exports.getAllExpenses = async(req,res,next) => {
-
+exports.getExpenses = async(req,res,next) => {
+    
+    const page = parseInt(req.query.page);
     const userId = req.user.dataValues.id;
     const ispremium = req.user.dataValues.ispremium;
+    const ITEMS_PER_PAGE = 8;
 
     try{
+        // getting the count of expenses added
+        const totalExpense = await Expense.count({where : {userId : userId}});
+
         // response is an array
-        const response = await Expense.findAll({ where : {userId : userId} });
-        return res.status(201).json({success:response, ispremium : ispremium});
+        const expensesPerPage = await Expense.findAll({
+            where : {userId : userId},
+            offset : (page-1)*ITEMS_PER_PAGE,
+            limit : ITEMS_PER_PAGE,
+        });
+        return res.status(201).json({
+            success : expensesPerPage,
+            ispremium : ispremium,
+            currentPage : page,
+            hasNextPage : ITEMS_PER_PAGE*page < totalExpense,
+            hasPreviousPage : page>1,
+            nextPage : page+1,
+            previousPage : page-1,
+            lastPage : Math.ceil(totalExpense/ITEMS_PER_PAGE), 
+        });
     }
     catch(err){
         return res.status(500).json({success:err, message:'Failed'});

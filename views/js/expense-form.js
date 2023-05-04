@@ -1,9 +1,9 @@
 const form = document.getElementById("createExpenseForm");
 
-
 form.addEventListener('submit', creatingExpense);
 let rowCount = 0;
 
+// creating expense when we add one
 async function creatingExpense(e) {
     e.preventDefault();
 
@@ -27,7 +27,7 @@ async function creatingExpense(e) {
         console.log(err);
     }
     
-    increaseCount();
+    increaseCount();    //INCREASE COUNT FOR ROW NUMBER
 
     // creating tags
     const th = document.createElement('th');
@@ -84,111 +84,54 @@ async function creatingExpense(e) {
 };
 
 
-
-function increaseCount(){
-    rowCount++;
-};
-
-function decreaseCount(){
-    rowCount--;
-};
-
-function resetCount(){
-    rowCount = 0;
-};
-
+// ON RELOADING THE PAGE
 window.addEventListener('DOMContentLoaded',async () => {
 
-    const token = localStorage.getItem('id');
-    const premiumBtn = document.getElementById('premiumUser').parentElement;
+    // when we reload we look for the page number on which we were on 'page' parameter
+    const objUrlParams = new URLSearchParams(window.location.search);
+    const page = parseInt(objUrlParams.get("page")) || 1;
+
+    // PARENT TAG FOR EXPENSE TABLE
     const parentTagRow = document.getElementById('table-body-expense');
+    // TOKEN FOR USER ID
+    const token = localStorage.getItem('id');
+    
+    // PREMIUM FEATURES
+    const premiumBtn = document.getElementById('premiumUser').parentElement;
     const premiumParent = document.getElementById("premiumUserMsg");
     const downloadPremiumBtn = document.getElementById("premiumDownloadBtn");
 
-    try{
-        const response = await axios.get('http://localhost:3000/expense/getAllExpenses', { headers : {'Authorization' : token} });
-        
-        
-        // ----------------------------------------------------------
-        // Premium features
+    // PAGINATION
+    const pagination = document.getElementById("pagination");
 
+    try{
+        const response = await axios.get(`http://localhost:3000/expense/getExpenses?page=${page}`, { headers : {'Authorization' : token} });
+
+        // -----------------------------------------------------------------------------------------------------------
+        // PREMIUM FEATURES
         const ispremium = response.data.ispremium;
         localStorage.setItem('isPremium',ispremium);
+
         if(ispremium == true){
-            premiumParent.style = 'block'; 
+            premiumParent.style = 'block';
             premiumBtn.remove();
             downloadPremiumBtn.style = 'button';
         }
-        // ----------------------------------------------------------
-
+        // ------------------------------------------------------------------------------------------------------------
 
         // resetting the row count to zero
         resetCount();
 
-        for(let entry of response.data.success){
-
-            // increasing count for the row
-            increaseCount(); 
-
-            // creating tags
-            const th = document.createElement('th');
-            const tdAmount= document.createElement('td');
-            const tdDescription = document.createElement('td');
-            const tdCategory = document.createElement('td');
-            const tdButton = document.createElement('td');
-
-            // adding data to the rows
-            th.scope = "row";
-            th.textContent = rowCount;
-            tdAmount.textContent = entry.amount;
-            tdDescription.textContent = entry.description;
-            tdCategory.textContent = entry.type;
-
-            // creating parent tag
-            const tr = document.createElement('tr');
-            tr.appendChild(th);
-            tr.appendChild(tdAmount);
-            tr.appendChild(tdCategory);
-            tr.appendChild(tdDescription);
-
-            // DELETE BUTTON
-            const del = document.createElement("btn");
-            const delData = document.createTextNode("X");
-            del.className = "btn btn-outline-danger";
-            del.appendChild(delData);
-
-            // adding button to parent tag
-            tdButton.appendChild(del);
-            tr.appendChild(tdButton);
-
-            // adding to the whole row to the table
-            parentTagRow.appendChild(tr);
-
-            // deleting li tag
-            del.onclick = async (e) => {
-
-                try {
-                    // using axios to push data to backend
-                    const response = await axios.get(`http://localhost:3000/expense/deleteExpense/${entry.id}`, { headers : {'Authorization' : token} });
-                    console.log(response);
-                }
-                catch(err){
-                    alert('Something went wrong !!')
-                    console.log(err);
-                }
-
-                e.target.parentElement.parentElement.remove();
-
-                // decrease count
-                decreaseCount();
-            }
-        }
+        // creating entries for the table
+        const expense = response.data.success;
+        creatingRowsForTable(expense,parentTagRow);
+        // creating pagination
+        showPagination(response.data)
     }
     catch(err){
         console.log(err);
     }
 });
-
 
 // FOR ORDERS RAZORPAY
 document.getElementById('premiumUser').onclick = async(e) => {
@@ -236,5 +179,141 @@ document.getElementById('premiumUser').onclick = async(e) => {
         alert('Something went wrong !!');
         rzp1.close();
     });
-
 };
+
+// creating Rows for the frontend
+async function creatingRowsForTable(expense,parentTagRow){
+    // clearing the old data
+    parentTagRow.innerHTML = "";
+    
+    for(let entry of expense){
+
+        // increasing count for the row
+        increaseCount();
+
+        // creating tags
+        const th = document.createElement('th');
+        const tdAmount= document.createElement('td');
+        const tdDescription = document.createElement('td');
+        const tdCategory = document.createElement('td');
+        const tdButton = document.createElement('td');
+
+        // adding data to the rows
+        th.scope = "row";
+        th.textContent = rowCount;
+        tdAmount.textContent = entry.amount;
+        tdDescription.textContent = entry.description;
+        tdCategory.textContent = entry.type;
+
+        // creating parent tag
+        const tr = document.createElement('tr');
+        tr.appendChild(th);
+        tr.appendChild(tdAmount);
+        tr.appendChild(tdCategory);
+        tr.appendChild(tdDescription);
+
+        // DELETE BUTTON
+        const del = document.createElement("btn");
+        const delData = document.createTextNode("X");
+        del.className = "btn btn-outline-danger";
+        del.appendChild(delData);
+
+        // adding button to parent tag
+        tdButton.appendChild(del);
+        tr.appendChild(tdButton);
+
+        // adding to the whole row to the table
+        parentTagRow.appendChild(tr);
+
+        // deleting li tag
+        del.onclick = async (e) => {
+
+            try {
+                // using axios to push data to backend
+                const response = await axios.get(`http://localhost:3000/expense/deleteExpense/${entry.id}`, { headers : {'Authorization' : token} });
+                console.log(response);
+            }
+            catch(err){
+                alert('Something went wrong !!')
+                console.log(err);
+            }
+
+            e.target.parentElement.parentElement.remove();
+
+            // decrease count
+            decreaseCount();
+        }
+    }
+};
+
+// increase the row count
+function increaseCount(){
+    rowCount++;
+};
+
+// decrease the row count
+function decreaseCount(){
+    rowCount--;
+};
+
+// reset the row count
+function resetCount(){
+    rowCount = 0;
+};
+
+async function showPagination({
+    currentPage,
+    hasNextPage,
+    hasPreviousPage,
+    nextPage,
+    previousPage,
+}){
+    // clearing pagination buttons
+    pagination.innerHTML = "";
+
+    // creating previous page button
+    if(hasPreviousPage){
+        
+        const btn1 = document.createElement('button');
+        btn1.innerHTML = previousPage;
+        btn1.addEventListener('click',() => getExpensePage(previousPage));
+        btn1.type = 'button';
+        btn1.className = 'btn btn-light';
+        pagination.appendChild(btn1);
+    }
+
+    // creating current button
+    const btn2 = document.createElement('button');
+    btn2.innerHTML = currentPage;
+    btn2.addEventListener('click',() => getExpensePage(currentPage));
+    btn2.type = 'button';
+    btn2.className = 'btn btn-light active';
+    pagination.appendChild(btn2);
+
+    // creating next button
+    if(hasNextPage){
+        
+        const btn3 = document.createElement('button');
+        btn3.innerHTML = nextPage;
+        btn3.addEventListener('click',() => getExpensePage(nextPage));
+        btn3.type = 'button';
+        btn3.className = 'btn btn-light';
+        pagination.appendChild(btn3);
+    }
+};
+
+async function getExpensePage(page){
+    const token = localStorage.getItem('id');
+    try{
+        const response = await axios.get(`http://localhost:3000/expense/getExpenses?page=${page}`,{ headers : {'Authorization' : token} });
+        const parentTagRow = document.getElementById('table-body-expense');
+        
+        // creating rows
+        creatingRowsForTable(response.data.success, parentTagRow);
+        // creating pagination
+        showPagination(response.data);
+    }
+    catch(err){
+        console.log(err);
+    }
+}
