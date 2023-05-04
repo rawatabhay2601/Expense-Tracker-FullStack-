@@ -103,18 +103,21 @@ window.addEventListener('DOMContentLoaded',async () => {
     const premiumBtn = document.getElementById('premiumUser').parentElement;
     const parentTagRow = document.getElementById('table-body-expense');
     const premiumParent = document.getElementById("premiumUserMsg");
+    const downloadPremiumBtn = document.getElementById("premiumDownloadBtn");
 
     try{
         const response = await axios.get('http://localhost:3000/expense/getAllExpenses', { headers : {'Authorization' : token} });
         
         
         // ----------------------------------------------------------
-        // check if this is required or not 
+        // Premium features
+
         const ispremium = response.data.ispremium;
         localStorage.setItem('isPremium',ispremium);
         if(ispremium == true){
             premiumParent.style = 'block'; 
             premiumBtn.remove();
+            downloadPremiumBtn.style = 'button';
         }
         // ----------------------------------------------------------
 
@@ -222,7 +225,6 @@ document.getElementById('premiumUser').onclick = async(e) => {
     e.preventDefault(); //why is this used
 
     rzp1.on('payment.failed', async (response) => {
-        
         
         await axios.post('http://localhost:3000/purchase/failedTransaction', {
 

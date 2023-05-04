@@ -34,3 +34,6 @@ nav{
 #leadersboard{
     margin-top: 3rem;
 }
+.nav-item-active{
+    font-weight: 600;
+}
