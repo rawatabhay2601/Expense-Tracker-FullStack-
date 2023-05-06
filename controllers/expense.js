@@ -118,7 +118,8 @@ exports.downloadExpense = async (req,res,next) => {
         const fileName = `Expenses${req.user.id}/${JSON.stringify(new Date())}.txt`
         const fileUrl = await uploadToS3(stringfiedData, fileName);
         // console.log(fileUrl);
-        return res.status(201).json({success : fileUrl, message : "Successful"});
+        req.fileUrl = fileUrl;
+        next();
     }
     catch(err){
         console.log(err);

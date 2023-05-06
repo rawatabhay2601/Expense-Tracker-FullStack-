@@ -9,13 +9,10 @@ async function downloadExpense(){
     try{
         const response = await axios.get('http://localhost:3000/expense/downloadExpense', {headers : {'Authorization': token}});
         if(response.status === 201){
-
-            const {data} = response;
-            const {success} = data;
-            
+            console.log('Download file');
             // creating a tag to click on the URL
             const a = document.createElement('a');
-            a.href = success;
+            a.href = response.data.success;
             a.download = "myExpense.csv";
             a.click();
         }

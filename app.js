@@ -11,6 +11,7 @@ const Users = require('./models/users');
 const Expense = require('./models/expense');
 const Order = require('./models/order');
 const ForgotPassword = require('./models/forgotPassword');
+const ListOfFiles = require('./models/listDownloadFile');
 
 // ROUTES
 const orderRoute = require('./routes/orderRoute');
@@ -18,6 +19,7 @@ const leaderboardRoute = require('./routes/leadersboardRoute');
 const userRoute = require('./routes/userRoutes');
 const expenseRoute = require('./routes/expenseRoutes');
 const forgotPasswordRoute = require('./routes/forgotPassword')
+const listOfFilesRoute = require('./routes/listOfFiles');
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -27,6 +29,7 @@ app.use(expenseRoute);
 app.use(orderRoute);
 app.use(leaderboardRoute);
 app.use(forgotPasswordRoute);
+app.use(listOfFilesRoute);
 
 // Users and Expense One2Many
 Users.hasMany(Expense);
@@ -39,6 +42,10 @@ Order.belongsTo(Users);
 // Users and Forgot Password One2Many
 Users.hasMany(ForgotPassword);
 ForgotPassword.belongsTo(Users);
+
+// Users and List of Downloaded Files One2Many
+Users.hasMany(ListOfFiles);
+ListOfFiles.belongsTo(Users);
 
 Sequelize.sync({force : false})
     .then(res => app.listen(3000))

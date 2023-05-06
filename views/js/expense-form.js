@@ -139,6 +139,7 @@ document.getElementById('premiumUser').onclick = async(e) => {
     const premiumBtn = document.getElementById('premiumUser');
     const premiumMsg= document.getElementById('premiumUserMsg');
     const token = localStorage.getItem('id');
+    const downloadPremiumBtn = document.getElementById("premiumDownloadBtn");
 
     const response = await axios.get('http://localhost:3000/purchase/premiumMembership', {
         headers : {'Authorization': token}
@@ -158,6 +159,7 @@ document.getElementById('premiumUser').onclick = async(e) => {
             premiumBtn.parentElement.remove();    // removing premium button
             premiumMsg.style = "display:block";   // making message and button visible
             localStorage.setItem('isPremium','true'); // adding message to the local Storage
+            downloadPremiumBtn.display = "button";  //displaying the download button
 
             alert('You are a Premium User Now !!');
         }
