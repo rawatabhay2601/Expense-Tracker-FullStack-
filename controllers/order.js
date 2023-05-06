@@ -1,8 +1,8 @@
 const Order = require("../models/order");
 const Razorpay = require('razorpay');
 
-const RAZORPAY_KEY_ID = 'rzp_test_HXW5ZPWe5Uq2T8';
-const RAZORPAY_KEY_SECRET = 'El1JWcb2iRRGardAxbTSv9Tf';
+const RAZORPAY_KEY_ID = 'rzp_test_iFYlVh6rY5pHOi';
+const RAZORPAY_KEY_SECRET = 'AQXxVxLxKmQQnM6V4OiIChzo';
 
 exports.purchasePremium = async (req,res) => {
 

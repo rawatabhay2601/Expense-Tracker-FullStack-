@@ -185,7 +185,7 @@ document.getElementById('premiumUser').onclick = async(e) => {
 async function creatingRowsForTable(expense,parentTagRow){
     // clearing the old data
     parentTagRow.innerHTML = "";
-    
+
     for(let entry of expense){
 
         // increasing count for the row
@@ -261,6 +261,7 @@ function resetCount(){
     rowCount = 0;
 };
 
+// used in creating pagination
 async function showPagination({
     currentPage,
     hasNextPage,
@@ -301,7 +302,7 @@ async function showPagination({
         pagination.appendChild(btn3);
     }
 };
-
+// used in assisting pagination process
 async function getExpensePage(page){
     const token = localStorage.getItem('id');
     try{
@@ -316,4 +317,4 @@ async function getExpensePage(page){
     catch(err){
         console.log(err);
     }
-}
+};
