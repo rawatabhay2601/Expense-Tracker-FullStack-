@@ -37,3 +37,8 @@ nav{
 .nav-item-active{
     font-weight: 600;
 }
+#paginationContainer{
+    position: absolute;
+    bottom: 0%;
+    left: 50%
+}

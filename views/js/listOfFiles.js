@@ -1,15 +1,5 @@
 // event listener to display fileUrl
 window.addEventListener('DOMContentLoaded',showFilesDownloaded);
-// // event listener to save fileUrl
-// saveUrl.addEventListener('click',addFileUrl);
-
-
-// // saving fileURL data to DB
-// async function addFileUrl(){
-//     const response = await axios.post('http://localhost:3000/download/SaveFileUrl', {headers : {'Authorization': token}});
-//     console.log('Added File');
-// };
-
 
 // showing fileURL data tp UI
 async function showFilesDownloaded(){

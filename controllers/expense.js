@@ -1,6 +1,10 @@
 const Expense = require("../models/expense");
 const sequelize = require("../util/database");
-const AWS = require('aws-sdk');
+
+// services
+const ExpenseService = require('../services/expenseServices');
+const UserService = require('../services/UserServices');
+const S3Service = require('../services/s3Services');
 
 function isvalidString(str){
     if(str.length == 0 || str == undefined){
@@ -52,18 +56,19 @@ exports.getExpenses = async(req,res,next) => {
     const page = parseInt(req.query.page);
     const userId = req.user.dataValues.id;
     const ispremium = req.user.dataValues.ispremium;
-    const ITEMS_PER_PAGE = 8;
+    const ITEMS_PER_PAGE = parseInt(req.query.perPage);
 
     try{
         // getting the count of expenses added
-        const totalExpense = await Expense.count({where : {userId : userId}});
+        const totalExpense = await ExpenseService.expensesCount({where : {userId : userId}});
 
-        // response is an array
-        const expensesPerPage = await Expense.findAll({
+        const params = {
             where : {userId : userId},
             offset : (page-1)*ITEMS_PER_PAGE,
             limit : ITEMS_PER_PAGE,
-        });
+        };
+        // response is an array
+        const expensesPerPage = await ExpenseService.getExpenses(params);
         return res.status(201).json({
             success : expensesPerPage,
             ispremium : ispremium,
@@ -84,7 +89,6 @@ exports.getExpenses = async(req,res,next) => {
 exports.deleteExpense = async (req,res,next) => {
     const t = await sequelize.transaction();
     try{
-        
         let totalExpense = parseFloat(req.user.totalExpense);
         const id = req.params.expensePK;
 
@@ -94,10 +98,10 @@ exports.deleteExpense = async (req,res,next) => {
         totalExpense = totalExpense - amount;
         
         // update with transaction
-        await req.user.update({totalExpense : totalExpense},{transaction:t});
+        await UserService.updateUser(req,{totalExpense : totalExpense},{transaction:t});
 
         // deleting expense record from the expense table
-        await Expense.destroy({where : {id : id}}, {transaction:t});
+        await ExpenseService.deleteExpense({where : {id : id}}, {transaction:t});
         
         // transaction commit
         await t.commit();
@@ -116,8 +120,7 @@ exports.downloadExpense = async (req,res,next) => {
         const expenses = await req.user.getExpenses();
         const stringfiedData = JSON.stringify(expenses);
         const fileName = `Expenses${req.user.id}/${JSON.stringify(new Date())}.txt`
-        const fileUrl = await uploadToS3(stringfiedData, fileName);
-        // console.log(fileUrl);
+        const fileUrl = await S3Service.uploadToS3(stringfiedData, fileName);
         req.fileUrl = fileUrl;
         next();
     }
@@ -127,31 +130,31 @@ exports.downloadExpense = async (req,res,next) => {
     }
 };
 
-async function uploadToS3(fileData, fileName){
-    const BUCKET_NAME = "expensetracking-abhay";
-    const USER_ACCESS_KEY = "AKIAYXSCVMEKSN2TGNOB";
-    const USER_SECRET_KEY = "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";
+// async function uploadToS3(fileData, fileName){
+//     const BUCKET_NAME = "expensetracking-abhay";
+//     const USER_ACCESS_KEY = "AKIAYXSCVMEKSN2TGNOB";
+//     const USER_SECRET_KEY = "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";
 
-    const s3bucket = new AWS.S3({
-        accessKeyId : USER_ACCESS_KEY,
-        secretAccessKey : USER_SECRET_KEY
-    });
+//     const s3bucket = new AWS.S3({
+//         accessKeyId : USER_ACCESS_KEY,
+//         secretAccessKey : USER_SECRET_KEY
+//     });
 
-    var params = {
-        Bucket : BUCKET_NAME,
-        Key : fileName,
-        Body : fileData,
-        ACL:"public-read"
-    }
-    return new Promise( (resolve, reject) => {
+//     var params = {
+//         Bucket : BUCKET_NAME,
+//         Key : fileName,
+//         Body : fileData,
+//         ACL:"public-read"
+//     }
+//     return new Promise( (resolve, reject) => {
 
-        s3bucket.upload(params , (err , s3Response) => {
-            if(err) reject("Upload failed : ",err)
-            else {
-                console.log("Succesfully uploaded : ",s3Response);
-                resolve(s3Response.Location);
-            }
-        });
-    })
+//         s3bucket.upload(params , (err , s3Response) => {
+//             if(err) reject("Upload failed : ",err)
+//             else {
+//                 console.log("Succesfully uploaded : ",s3Response);
+//                 resolve(s3Response.Location);
+//             }
+//         });
+//     })
 
-};
+// };

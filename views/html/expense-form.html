@@ -31,8 +31,18 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="nav nav-pills nav-fill mx-auto" >
                     <!-- ADD NAVBAR LINKS-->
+                    <div class="container">
+                        <label class="form-label">Expenses per Page</label>
+                        <select name="dropdown" id="expense-per-page" class="form-select" aria-placeholder="Expenses per Page">
+                            <option>5</option>
+                            <option>8</option>
+                            <option>10</option>
+                            <option>15</option>
+                        </select>
+                        <button type="button" class="btn btn-light small" style="margin-top: 0.5rem;" id="set">Set</button>
+                    </div>
                 </ul>
-
+                
                 <!-- THIS IS THE SEARCH BAR -->
 
                 <!-- <form class="d-flex">
@@ -64,8 +74,8 @@
     <!-- PREMIUM BUTTON MESSAGE -->
     <div class="container" id="premiumUserMsg" style="display: none;">
         <h4 style="color: rgb(0, 0, 0);">Premium User</h4>
-        <button class="btn btn-light sm"c id="showleaders">Show Leadersboard</button>
-        <a class="btn btn-light sm"c href="C:\Users\hp\Desktop\Expense-Tracker-FullStack--main\views\html\listOfFiles.html" id="showFiles">Show Download Files</button>
+        <button class="btn btn-light sm" id="showleaders">Show Leadersboard</button>
+        <a class="btn btn-light sm" href="C:\Users\hp\Desktop\Expense-Tracker-FullStack--main\views\html\listOfFiles.html" id="showFiles">Show Download Files</button></a>
     </div>
 
     <div class="container">
@@ -99,11 +109,13 @@
                 <button type="button" id="premiumUser" class="btn btn-success">Buy</button>
             </div>
 
-            <div class="col">
-                <div class="btn-toolbar" id="pagination"></div>
-            </div>
+            
             
         </div>
+    </div>
+
+    <div class="container" id="paginationContainer">
+        <div class="btn-toolbar" id="pagination"></div>
     </div>
 
     <!-- THE MODAL FOR ADDING EXPENSE -->
@@ -134,6 +146,8 @@
                                 <option>Clothes</option>
                             </select>
                         </div>
+
+                        
 
                         <button type="submit" class="btn btn-secondary" id="submit">Submit</button>
                     </form>

@@ -83,7 +83,6 @@ async function creatingExpense(e) {
     }
 };
 
-
 // ON RELOADING THE PAGE
 window.addEventListener('DOMContentLoaded',async () => {
 
@@ -100,12 +99,13 @@ window.addEventListener('DOMContentLoaded',async () => {
     const premiumBtn = document.getElementById('premiumUser').parentElement;
     const premiumParent = document.getElementById("premiumUserMsg");
     const downloadPremiumBtn = document.getElementById("premiumDownloadBtn");
+    const expensePerPage = document.getElementById('expense-per-page').value;
 
     // PAGINATION
     const pagination = document.getElementById("pagination");
 
     try{
-        const response = await axios.get(`http://localhost:3000/expense/getExpenses?page=${page}`, { headers : {'Authorization' : token} });
+        const response = await axios.get(`http://localhost:3000/expense/getExpenses?page=${page}&perPage=${expensePerPage}`, { headers : {'Authorization' : token} });
 
         // -----------------------------------------------------------------------------------------------------------
         // PREMIUM FEATURES
@@ -187,7 +187,7 @@ document.getElementById('premiumUser').onclick = async(e) => {
 async function creatingRowsForTable(expense,parentTagRow){
     // clearing the old data
     parentTagRow.innerHTML = "";
-
+    resetCount();
     for(let entry of expense){
 
         // increasing count for the row
@@ -231,6 +231,7 @@ async function creatingRowsForTable(expense,parentTagRow){
         del.onclick = async (e) => {
 
             try {
+                const token = localStorage.getItem('id');
                 // using axios to push data to backend
                 const response = await axios.get(`http://localhost:3000/expense/deleteExpense/${entry.id}`, { headers : {'Authorization' : token} });
                 console.log(response);
@@ -304,11 +305,15 @@ async function showPagination({
         pagination.appendChild(btn3);
     }
 };
+
 // used in assisting pagination process
 async function getExpensePage(page){
+
     const token = localStorage.getItem('id');
+    const expensePerPage = parseInt(document.getElementById('expense-per-page').value);
+
     try{
-        const response = await axios.get(`http://localhost:3000/expense/getExpenses?page=${page}`,{ headers : {'Authorization' : token} });
+        const response = await axios.get(`http://localhost:3000/expense/getExpenses?page=${page}&perPage=${expensePerPage}`,{ headers : {'Authorization' : token} });
         const parentTagRow = document.getElementById('table-body-expense');
         
         // creating rows
@@ -319,4 +324,12 @@ async function getExpensePage(page){
     catch(err){
         console.log(err);
     }
+};
+
+// assisting Expenses Per Page
+document.getElementById('set').onclick = () => {
+    const objUrlParams = new URLSearchParams(window.location.search);
+    const page = parseInt(objUrlParams.get("page")) || 1;
+
+    getExpensePage(page);
 };

@@ -13,9 +13,15 @@ exports.listOfFiles = async (req,res,next) => {
 };
 
 exports.addFileUrl = async (req,res) => {
-
-    const fileUrl = req.fileUrl;
-    const userId = req.user.id; 
-    await ListOfFiles.create({url:fileUrl, userId: userId});
-    return res.status(201).json({success : fileUrl, message : "Successful"});
+    try{
+        const fileUrl = req.fileUrl;
+        const userId = req.user.id; 
+        await ListOfFiles.create({url:fileUrl, userId: userId});
+        return res.status(201).json({success : fileUrl, message : "Successful"});
+    }
+    catch(err){
+        console.log(err);
+        alert('Something Went wrong !!')
+        return res.status(500).json({success : 'false', message : "Failed"});
+    }
 };
