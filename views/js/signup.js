@@ -16,8 +16,7 @@ async function signupSubmit(e){
     }
 
     try{
-        const res = await axios.post('http://localhost:3000/user/postUser',obj);
-        console.log(res);
+        await axios.post('http://localhost:3000/user/postUser',obj);
         window.location.href = "../html/login.html";
     }
     catch(err){

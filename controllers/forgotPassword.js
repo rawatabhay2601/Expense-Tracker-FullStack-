@@ -1,9 +1,9 @@
 const Sib = require('sib-api-v3-sdk');
-require('dotenv').config();
 const uuid = require('uuid');
 const bcrypt = require('bcrypt');
 const User = require('../models/users');
 const Forgotpassword = require('../models/forgotPassword');
+require('dotenv').config();
 
 exports.forgotPassword = async(req,res,next) => {
     
@@ -29,7 +29,7 @@ exports.forgotPassword = async(req,res,next) => {
     
             // sender's email
             const sender = {
-                email : 'rawatabhay2601@gmail.com'
+                email : process.env.SENDER_EMAIL
             };
             
             // receiver's email
@@ -62,7 +62,6 @@ exports.forgotPassword = async(req,res,next) => {
         return res.status(501).json({message:'Failed', success:err})
     }
 };
-
 
 exports.resetPassword = async (req,res,next) => {
 
@@ -110,9 +109,8 @@ exports.updatePassword = async (req,res,next) => {
         if(user) {
 
             //encrypting the password using bcrypt
-            const salt = 10;
             
-            bcrypt.hash(newpassword, salt, async (err, hash) => {
+            bcrypt.hash(newpassword, process.env.SALT_ROUNDS, async (err, hash) => {
                 
                 if(err){
                     throw new Error(err);

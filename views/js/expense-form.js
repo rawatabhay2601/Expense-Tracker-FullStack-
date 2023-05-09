@@ -84,7 +84,7 @@ async function creatingExpense(e) {
 };
 
 // ON RELOADING THE PAGE
-window.addEventListener('DOMContentLoaded',async () => {
+window.addEventListener('DOMContentLoaded',async(e) => {
 
     // when we reload we look for the page number on which we were on 'page' parameter
     const objUrlParams = new URLSearchParams(window.location.search);
@@ -99,7 +99,7 @@ window.addEventListener('DOMContentLoaded',async () => {
     const premiumBtn = document.getElementById('premiumUser').parentElement;
     const premiumParent = document.getElementById("premiumUserMsg");
     const downloadPremiumBtn = document.getElementById("premiumDownloadBtn");
-    const expensePerPage = document.getElementById('expense-per-page').value;
+    const expensePerPage = localStorage.getItem('expense-per-page') || 5;   //get 5 expenses if nothing mentioned
 
     // PAGINATION
     const pagination = document.getElementById("pagination");
@@ -310,7 +310,7 @@ async function showPagination({
 async function getExpensePage(page){
 
     const token = localStorage.getItem('id');
-    const expensePerPage = parseInt(document.getElementById('expense-per-page').value);
+    const expensePerPage = localStorage.getItem('expense-per-page');
 
     try{
         const response = await axios.get(`http://localhost:3000/expense/getExpenses?page=${page}&perPage=${expensePerPage}`,{ headers : {'Authorization' : token} });
@@ -330,6 +330,9 @@ async function getExpensePage(page){
 document.getElementById('set').onclick = () => {
     const objUrlParams = new URLSearchParams(window.location.search);
     const page = parseInt(objUrlParams.get("page")) || 1;
+    const expensePerPage = parseInt(document.getElementById('expense-per-page').value);
+
+    localStorage.setItem('expense-per-page',expensePerPage);
 
     getExpensePage(page);
 };

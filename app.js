@@ -5,6 +5,11 @@ const app = express();
 const Sequelize = require('./util/database');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const helmet = require('helmet');
+const morgan = require('morgan');
+const fs = require('fs');
+const path = require('path');
+require('dotenv').config();
 
 // MODELS
 const Users = require('./models/users');
@@ -21,9 +26,19 @@ const expenseRoute = require('./routes/expenseRoutes');
 const forgotPasswordRoute = require('./routes/forgotPassword')
 const listOfFilesRoute = require('./routes/listOfFiles');
 
+// creating stream for logging requests
+const accessLogStream = fs.createWriteStream(
+    path.join(__dirname,'access.log'),
+    {flag : 'a'}
+);
+
+// Utility middlewares
 app.use(cors());
 app.use(bodyParser.json());
+app.use(morgan('combined', {stream : accessLogStream}));
+app.use(helmet());
 
+// Calling routes in these middleware
 app.use(userRoute);
 app.use(expenseRoute);
 app.use(orderRoute);
@@ -48,5 +63,5 @@ Users.hasMany(ListOfFiles);
 ListOfFiles.belongsTo(Users);
 
 Sequelize.sync({force : false})
-    .then(res => app.listen(3000))
-    .catch(err => console.log(err));
+    .then(res => app.listen(process.env.PORT || 3000))
+    .catch(err => console.log(err))

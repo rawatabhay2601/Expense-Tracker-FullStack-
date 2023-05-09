@@ -1,17 +1,17 @@
 const AWS = require('aws-sdk');
+require('dotenv').config();
 
 async function uploadToS3(fileData, fileName){
-    const BUCKET_NAME = "expensetracking-abhay";
-    const USER_ACCESS_KEY = "AKIAYXSCVMEKSN2TGNOB";
-    const USER_SECRET_KEY = "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";
+    const accessKeyId = process.env.USER_ACCESS_KEY;
+    const secretAccessKey = process.env.USER_SECRET_KEY;
 
     const s3bucket = new AWS.S3({
-        accessKeyId : USER_ACCESS_KEY,
-        secretAccessKey : USER_SECRET_KEY
+        accessKeyId : process.env.USER_ACCESS_KEY,
+        secretAccessKey : process.env.USER_SECRET_KEY
     });
 
     var params = {
-        Bucket : BUCKET_NAME,
+        Bucket : process.env.BUCKET_NAME,
         Key : fileName,
         Body : fileData,
         ACL:"public-read"

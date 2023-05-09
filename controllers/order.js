@@ -1,28 +1,32 @@
 const Order = require("../models/order");
 const Razorpay = require('razorpay');
-
-const RAZORPAY_KEY_ID = 'rzp_test_iFYlVh6rY5pHOi';
-const RAZORPAY_KEY_SECRET = 'AQXxVxLxKmQQnM6V4OiIChzo';
+require('dotenv').config();
 
 exports.purchasePremium = async (req,res) => {
+
+    const RAZORPAY_KEY_ID = "rzp_test_4glXp435MoyYsb";
+    const RAZORPAY_KEY_SECRET = "kgFzdTKWiy6rm18c1v7rAJxU";
 
     try{
         var rzp = new Razorpay({
             key_id : RAZORPAY_KEY_ID,
             key_secret : RAZORPAY_KEY_SECRET
-        })
-        const amount = 2500;
+        });
+        const amount = 25000;
 
         rzp.orders.create({amount, currency:'INR'}, async (err, order) => {
+
             if(err){
-                throw new Error(JSON.stringify(err))
-            }
-            try{
-                await req.user.createOrder({orderid : order.id, status : "PENDING"});
-                return res.status(201).json({order, key_id : rzp.key_id})
-            }
-            catch(err){
                 console.log(err);
+            }
+            else{
+                try{
+                    await req.user.createOrder({orderid : order.id, status : "PENDING"});
+                    return res.status(201).json({order, key_id : rzp.key_id})
+                }
+                catch(err){
+                    console.log(err);
+                }
             }
         });
     }

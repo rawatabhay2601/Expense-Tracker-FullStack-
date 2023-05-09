@@ -1,5 +1,6 @@
 const Expense = require("../models/expense");
 const sequelize = require("../util/database");
+require('dotenv').config();
 
 // services
 const ExpenseService = require('../services/expenseServices');
