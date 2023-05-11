@@ -21,65 +21,65 @@ async function creatingExpense(e) {
     try{
         const response = await axios.post("http://localhost:3000/expense/addExpense",obj, {headers : {'Authorization' : token}});
         expenseId = response.data.success.id;
-        // console.log(response);
+
+        increaseCount();    //INCREASE COUNT FOR ROW NUMBER
+        
+        if(rowCount < localStorage.getItem('expense-per-page') ){
+
+            // creating tags
+            const th = document.createElement('th');
+            const tdAmount= document.createElement('td');
+            const tdDescription = document.createElement('td');
+            const tdCategory = document.createElement('td');
+            const tdButton = document.createElement('td');
+            
+            // adding data to the rows
+            th.scope = "row";
+            th.textContent = rowCount;
+            tdAmount.textContent = amount;
+            tdDescription.textContent = description;
+            tdCategory.textContent = type;
+            
+            // creating parent tag
+            const tr = document.createElement('tr');
+            tr.appendChild(th);
+            tr.appendChild(tdAmount);
+            tr.appendChild(tdCategory);
+            tr.appendChild(tdDescription);
+            
+            // DELETE BUTTON
+            const del = document.createElement("btn");
+            const delData = document.createTextNode("X");
+            del.className = "btn btn-outline-danger";
+            del.appendChild(delData);
+            
+            // adding button to parent tag
+            tdButton.appendChild(del);
+            tr.appendChild(tdButton);
+            
+            // adding to the whole row to the table
+            parentTagRow.appendChild(tr);
+            
+            // deleting li tag
+            del.onclick = async (e) => {
+            
+                try {
+                    // using axios to push data to CrudCrud
+                    const response = await axios.get(`http://localhost:3000/expense/deleteExpense/${expenseId}`, { headers : {'Authorization' : token} });
+                    // decreasing count
+                    decreaseCount();
+                    // removing from the UI
+                    e.target.parentElement.parentElement.remove();
+                }
+                catch(err){
+                    alert('Something went wrong : delete button')
+                }
+            }
+        }
     }
+
     catch(err){
-        console.log(err);
-    }
-    
-    increaseCount();    //INCREASE COUNT FOR ROW NUMBER
-
-    // creating tags
-    const th = document.createElement('th');
-    const tdAmount= document.createElement('td');
-    const tdDescription = document.createElement('td');
-    const tdCategory = document.createElement('td');
-    const tdButton = document.createElement('td');
-
-    // adding data to the rows
-    th.scope = "row";
-    th.textContent = rowCount;
-    tdAmount.textContent = amount;
-    tdDescription.textContent = description;
-    tdCategory.textContent = type;
-    
-    // creating parent tag
-    const tr = document.createElement('tr');
-    tr.appendChild(th);
-    tr.appendChild(tdAmount);
-    tr.appendChild(tdCategory);
-    tr.appendChild(tdDescription);
-
-    // DELETE BUTTON
-    const del = document.createElement("btn");
-    const delData = document.createTextNode("X");
-    del.className = "btn btn-outline-danger";
-    del.appendChild(delData);
-
-    // adding button to parent tag
-    tdButton.appendChild(del);
-    tr.appendChild(tdButton);
-
-    // adding to the whole row to the table
-    parentTagRow.appendChild(tr);
-
-    // deleting li tag
-    del.onclick = async (e) => {
-
-        try {
-            // using axios to push data to CrudCrud
-            const response = await axios.get(`http://localhost:3000/expense/deleteExpense/${expenseId}`, { headers : {'Authorization' : token} });
-            console.log(response);
-        }
-        catch(err){
-            alert('Something went wrong : delete button')
-            console.log(err);
-        }
-        // decreasing count
-        decreaseCount();
-
-        // removing from the UI
-        e.target.parentElement.parentElement.remove();
+        alert('Something went wrong while creating !!');
     }
 };
 
@@ -97,9 +97,12 @@ window.addEventListener('DOMContentLoaded',async(e) => {
     
     // PREMIUM FEATURES
     const premiumBtn = document.getElementById('premiumUser').parentElement;
-    const premiumParent = document.getElementById("premiumUserMsg");
     const downloadPremiumBtn = document.getElementById("premiumDownloadBtn");
+    const leaderboard = document.getElementById('leaderboard');
+    const downloadHistory = document.getElementById('downloads-history');
     const expensePerPage = localStorage.getItem('expense-per-page') || 5;   //get 5 expenses if nothing mentioned
+    // STORING PAGE NUMBER IN THE LOCAL STORAGE(DEFAULT VALUE)
+    localStorage.setItem("expense-per-page",expensePerPage);
 
     // PAGINATION
     const pagination = document.getElementById("pagination");
@@ -113,9 +116,14 @@ window.addEventListener('DOMContentLoaded',async(e) => {
         localStorage.setItem('isPremium',ispremium);
 
         if(ispremium == true){
-            premiumParent.style = 'block';
+
+            // removing premium buy button
             premiumBtn.remove();
-            downloadPremiumBtn.style = 'button';
+
+            // displaying all the buttons in the navbar
+            leaderboard.style = 'display:block';
+            downloadPremiumBtn.style = 'display:block';
+            downloadHistory.style = 'display:block';
         }
         // ------------------------------------------------------------------------------------------------------------
 
@@ -136,16 +144,16 @@ window.addEventListener('DOMContentLoaded',async(e) => {
 // FOR ORDERS RAZORPAY
 document.getElementById('premiumUser').onclick = async(e) => {
 
-    const premiumBtn = document.getElementById('premiumUser');
-    const premiumMsg= document.getElementById('premiumUserMsg');
+    const leaderboard = document.getElementById('leaderboard');
+    const downloadHistory = document.getElementById('downloads-history');
+    const premiumBtn = document.getElementById('premiumBtn');
     const token = localStorage.getItem('id');
-    const downloadPremiumBtn = document.getElementById("premiumDownloadBtn");
+    const downloadBtn = document.getElementById("premiumDownloadBtn");
 
     const response = await axios.get('http://localhost:3000/purchase/premiumMembership', {
         headers : {'Authorization': token}
     });
 
-    console.log('Response from 1st request : ',response);
     var options = {
         'key' : response.data.key_id,
         'order_id': response.data.order.id,
@@ -156,11 +164,19 @@ document.getElementById('premiumUser').onclick = async(e) => {
                 payment_id: response.razorpay_payment_id,
             }, {headers : {'Authorization' : token} });
 
-            premiumBtn.parentElement.remove();    // removing premium button
-            premiumMsg.style = "display:block";   // making message and button visible
-            localStorage.setItem('isPremium','true'); // adding message to the local Storage
-            downloadPremiumBtn.display = "button";  //displaying the download button
+            // removing premium button
+            premiumBtn.parentElement.remove();
 
+            //displaying the download button
+            downloadBtn.style = "display:block";
+            //displaying the download button
+            leaderboard.style = "display:block";
+            //displaying the downloads history button
+            downloadHistory.style = "display:block";
+
+            localStorage.setItem('isPremium','true'); // adding message to the local Storage
+            
+            // setting up an alert
             alert('You are a Premium User Now !!');
         }
     }
@@ -178,13 +194,13 @@ document.getElementById('premiumUser').onclick = async(e) => {
 
         }, { headers : {'Authorization' : token} });
 
-        alert('Something went wrong !!');
+        alert('Something went wrong while payment!!');
         rzp1.close();
     });
 };
 
 // creating Rows for the frontend
-async function creatingRowsForTable(expense,parentTagRow){
+function creatingRowsForTable(expense,parentTagRow){
     // clearing the old data
     parentTagRow.innerHTML = "";
     resetCount();
@@ -310,7 +326,7 @@ async function showPagination({
 async function getExpensePage(page){
 
     const token = localStorage.getItem('id');
-    const expensePerPage = localStorage.getItem('expense-per-page');
+    const expensePerPage = localStorage.getItem('expense-per-page') || 5;
 
     try{
         const response = await axios.get(`http://localhost:3000/expense/getExpenses?page=${page}&perPage=${expensePerPage}`,{ headers : {'Authorization' : token} });
@@ -322,7 +338,7 @@ async function getExpensePage(page){
         showPagination(response.data);
     }
     catch(err){
-        console.log(err);
+        alert('Somehing went wrong in getting the data !!')
     }
 };
 

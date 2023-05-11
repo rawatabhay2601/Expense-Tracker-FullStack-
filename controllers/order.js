@@ -4,13 +4,10 @@ require('dotenv').config();
 
 exports.purchasePremium = async (req,res) => {
 
-    const RAZORPAY_KEY_ID = "rzp_test_4glXp435MoyYsb";
-    const RAZORPAY_KEY_SECRET = "kgFzdTKWiy6rm18c1v7rAJxU";
-
     try{
         var rzp = new Razorpay({
-            key_id : RAZORPAY_KEY_ID,
-            key_secret : RAZORPAY_KEY_SECRET
+            key_id : process.env.RAZORPAY_KEY_ID,
+            key_secret : process.env.RAZORPAY_KEY_SECRET
         });
         const amount = 25000;
 

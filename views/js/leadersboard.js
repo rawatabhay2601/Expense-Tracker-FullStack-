@@ -1,15 +1,27 @@
-document.getElementById('showleaders').onclick = async() => {
+window.addEventListener('DOMContentLoaded', async() => {
 
     let response;
-    const leaderTable = document.getElementById('leadersboard');
     const leaderParentTag = document.getElementById('table-body-leader');
-    leaderTable.style = "display : table ";
+    const ispremium = localStorage.getItem('isPremium');
+    const downloadPremiumBtn = document.getElementById("premiumDownloadBtn");
+    const leaderboard = document.getElementById('leaderboard');
+    const downloadHistory = document.getElementById('downloads-history');
+    // displaying the leadersboard table
+
+    if(ispremium == 'true'){
+        // displaying all the buttons in the navbar
+        leaderboard.style = 'display:block';
+        downloadPremiumBtn.style = 'display:block';
+        downloadHistory.style = 'display:block';
+    }
 
     try{
         response = await axios.get('http://localhost:3000/leaderboard/getLeaders');
-
+        
+        // clearing the leaders table
+        leaderParentTag.innerHTML = "";
         for(let data of response.data.success){
-
+            
             const tr = document.createElement('tr');
             const tdName = document.createElement('td');
             const tdAmount = document.createElement('td');
@@ -27,6 +39,4 @@ document.getElementById('showleaders').onclick = async() => {
     catch(err){
         console.log(err);
     }
-    
-};
-
+}); 

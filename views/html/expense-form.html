@@ -17,39 +17,43 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <link rel="stylesheet" href="../../public/css/expense-form.css">
-    <!-- <link rel="stylesheet" href="../../public/css/main.css"> -->
 
 </head>
 
 <body>
     <nav class="navbar navbar-expand-md">
         <div class="container-fluid">
-            <a class="navbar-brand"><h2>Day-to-Day Expense</h2></a>         <!-- REMOVED HREF FROM HERE -->
+            <a class="navbar-brand"><h2>Day-to-Day Expense</h2></a>
             <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+                <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="nav nav-pills nav-fill mx-auto" >
-                    <!-- ADD NAVBAR LINKS-->
-                    <div class="container">
-                        <label class="form-label">Expenses per Page</label>
-                        <select name="dropdown" id="expense-per-page" class="form-select" aria-placeholder="Expenses per Page">
-                            <option>5</option>
-                            <option>8</option>
-                            <option>10</option>
-                            <option>15</option>
-                        </select>
-                        <button type="button" class="btn btn-light small" style="margin-top: 0.5rem;" id="set">Set</button>
-                    </div>
-                </ul>
                 
-                <!-- THIS IS THE SEARCH BAR -->
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0" style="margin-left: 3rem;">
+                    
+                    <!-- ADD NAVBAR LINKS -->
+                    <li class="nav-item">
+                        <a class="nav-link active" href="C:\Users\hp\Desktop\Expense-Tracker-FullStack--main\views\html\expense-form.html" id="home">Home</a>
+                    </li>
 
-                <!-- <form class="d-flex">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-secondary" type="submit" style="height: 35px;">Search</button>
-                </form> -->
-                <button type="button" class="btn btn-success" style="display: none;" id="premiumDownloadBtn">Download file</button>
+                    <li class="nav-item">
+                        <a class="nav-link" style="display:none;" href="C:\Users\hp\Desktop\Expense-Tracker-FullStack--main\views\html\leaderboard.html" id="leaderboard">Leaderboard</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" style="display:none;" href="C:\Users\hp\Desktop\Expense-Tracker-FullStack--main\views\html\listOfFiles.html" id="downloads-history">Downloads History</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" style="display:none;" href="" id="premiumDownloadBtn">Download File</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="C:\Users\hp\Desktop\Expense-Tracker-FullStack--main\views\html\login.html" id="login">Login</a>
+                    </li>
+
+                </ul>
+
             </div>
         </div>
     </nav>
@@ -71,58 +75,57 @@
         </table>
     </div>
 
-    <!-- PREMIUM BUTTON MESSAGE -->
-    <div class="container" id="premiumUserMsg" style="display: none;">
-        <h4 style="color: rgb(0, 0, 0);">Premium User</h4>
-        <button class="btn btn-light sm" id="showleaders">Show Leadersboard</button>
-        <a class="btn btn-light sm" href="C:\Users\hp\Desktop\Expense-Tracker-FullStack--main\views\html\listOfFiles.html" id="showFiles">Show Download Files</button></a>
-    </div>
-
+    <!-- COTAINER FOR EXPENSE PER PAGE -->
     <div class="container">
-        <!-- FOR LEADERBOARD -->
-        <table class="table table-hover" id="leadersboard" style="display: none;">
-            <thead>
-                <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Expense</th>
-                </tr>
-            </thead>
-            <tbody id="table-body-leader"></tbody>
-        </table>
+        <label class="form-label">Expenses per Page</label>
+        <select name="dropdown" id="expense-per-page" class="form-select" aria-placeholder="Expenses per Page">
+            <option>5</option>
+            <option>8</option>
+            <option>10</option>
+            <option>13</option>
+        </select>
+        <button type="button" class="btn btn-success btn-sm" style="margin-top:0.5rem;" id="set">Set</button>
     </div>
 
     <!-- THE ADD EXPENSE BUTTON -->
-    <div class="container" style="position: absolute; right: 0;bottom: 0;">
-        <div class="row">
-            <div class="col" style="text-align: end; margin: auto;">
-                <label>Add Expenses : </label>
-                <button type="button" id="createExpense" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modal"><h4>+</h4></button>
-            </div>
-        </div>
-    </div>
-
-    <!-- PREMIUM ACCOUNT BUTTON -->
-    <div class="container" style="position: absolute; left: 0;bottom: 0;">
+    <div class="container" style="position: sticky; bottom: 0;">
         <div class="row">
             <div class="col" style="text-align: start; margin: auto;">
-                <label>Premium : </label>
+                <label>Premium :</label>
                 <button type="button" id="premiumUser" class="btn btn-success">Buy</button>
             </div>
 
-            
-            
+            <div class="col" style="text-align: end; margin: auto;">
+                <label>Add Expenses :</label>
+                <button type="button" id="createExpense" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modal"><h4>+</h4></button>
+            </div>
         </div>
+
     </div>
 
+    <!-- PREMIUM ACCOUNT BUTTON -->
+    <!-- <div class="container" style="position: sticky; left: 0;bottom: 0; display: inline-block;">
+        <div class="row">
+            
+        </div>
+    </div> -->
+
     <div class="container" id="paginationContainer">
-        <div class="btn-toolbar" id="pagination"></div>
+        <div class="col" >
+            <div class="btn-toolbar" id="pagination"></div>
+        </div>
     </div>
 
     <!-- THE MODAL FOR ADDING EXPENSE -->
     <div class="modal fade modal-fullscreen-md-down" id="modal">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header"><h3 style="color: black;">Create Expense</h3></div>
+
+                <div class="modal-header">
+                    <h3 class="modal-title" style="color: black;">Create Expense</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
                 <div class="modal-body">
                     <form id="createExpenseForm">
                         <div class="form-floating" style = "margin: 0.5rem;">
@@ -147,8 +150,6 @@
                             </select>
                         </div>
 
-                        
-
                         <button type="submit" class="btn btn-secondary" id="submit">Submit</button>
                     </form>
                 </div>
@@ -158,7 +159,6 @@
 
     <script src='../js/expense-form.js'></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <script src = '../js/leadersboard.js'></script>
     <script src = '../js/downloadFile.js'></script>
 </body>
 </html>

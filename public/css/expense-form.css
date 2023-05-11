@@ -34,11 +34,21 @@ nav{
 #leadersboard{
     margin-top: 3rem;
 }
-.nav-item-active{
+li.nav-item:hover{
     font-weight: 600;
+    font-size: large;
+}
+li.nav-item{
+    color: black;
 }
 #paginationContainer{
-    position: absolute;
-    bottom: 10%;
-    left: 46%
+    position: relative;
+    bottom: 0%;
+    left: 40%;
+}
+a.nav-link.active{
+    font-weight: 600;
+}
+#expense-per-page{
+    max-width: 20%;
 }
