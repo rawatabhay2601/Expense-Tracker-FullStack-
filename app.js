@@ -48,7 +48,7 @@ app.use(listOfFilesRoute);
 
 // for frontend
 app.use((req,res) => {
-    res.sendFile(path.join(__dirname, `html/${req.url}`));
+    res.sendFile(path.join(__dirname, `views/html/${req.url}`));
 });
 
 // Users and Expense One2Many

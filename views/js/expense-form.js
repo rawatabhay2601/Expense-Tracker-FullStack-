@@ -108,7 +108,7 @@ window.addEventListener('DOMContentLoaded',async(e) => {
     const pagination = document.getElementById("pagination");
 
     try{
-        const response = await axios.get(`http://3.84.94.78:3000/expense/getExpenses?page=${page}&perPage=${expensePerPage}`, { headers : {'Authorization' : token} });
+        const response = await axios.get(`http://localhost:3000/expense/getExpenses?page=${page}&perPage=${expensePerPage}`, { headers : {'Authorization' : token} });
 
         // -----------------------------------------------------------------------------------------------------------
         // PREMIUM FEATURES
