@@ -16,7 +16,7 @@ async function signupSubmit(e){
     }
 
     try{
-        await axios.post('http://localhost:3000/user/postUser',obj);
+        await axios.post('http://3.84.94.78:3000/user/postUser',obj);
         window.location.href = "../html/login.html";
     }
     catch(err){

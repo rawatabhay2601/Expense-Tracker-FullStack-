@@ -19,7 +19,7 @@ async function creatingExpense(e) {
     };
     
     try{
-        const response = await axios.post("http://localhost:3000/expense/addExpense",obj, {headers : {'Authorization' : token}});
+        const response = await axios.post("http://3.84.94.78:3000/expense/addExpense",obj, {headers : {'Authorization' : token}});
         expenseId = response.data.success.id;
 
         increaseCount();    //INCREASE COUNT FOR ROW NUMBER
@@ -65,7 +65,7 @@ async function creatingExpense(e) {
             
                 try {
                     // using axios to push data to CrudCrud
-                    const response = await axios.get(`http://localhost:3000/expense/deleteExpense/${expenseId}`, { headers : {'Authorization' : token} });
+                    const response = await axios.get(`http://3.84.94.78:3000/expense/deleteExpense/${expenseId}`, { headers : {'Authorization' : token} });
                     // decreasing count
                     decreaseCount();
                     // removing from the UI
@@ -108,7 +108,7 @@ window.addEventListener('DOMContentLoaded',async(e) => {
     const pagination = document.getElementById("pagination");
 
     try{
-        const response = await axios.get(`http://localhost:3000/expense/getExpenses?page=${page}&perPage=${expensePerPage}`, { headers : {'Authorization' : token} });
+        const response = await axios.get(`http://3.84.94.78:3000/expense/getExpenses?page=${page}&perPage=${expensePerPage}`, { headers : {'Authorization' : token} });
 
         // -----------------------------------------------------------------------------------------------------------
         // PREMIUM FEATURES
@@ -150,7 +150,7 @@ document.getElementById('premiumUser').onclick = async(e) => {
     const token = localStorage.getItem('id');
     const downloadBtn = document.getElementById("premiumDownloadBtn");
 
-    const response = await axios.get('http://localhost:3000/purchase/premiumMembership', {
+    const response = await axios.get('http://3.84.94.78:3000/purchase/premiumMembership', {
         headers : {'Authorization': token}
     });
 
@@ -159,7 +159,7 @@ document.getElementById('premiumUser').onclick = async(e) => {
         'order_id': response.data.order.id,
         'handler' : async function(response){
 
-            await axios.post('http://localhost:3000/purchase/updateTranscationStatus', {
+            await axios.post('http://3.84.94.78:3000/purchase/updateTranscationStatus', {
                 order_id:options.order_id,
                 payment_id: response.razorpay_payment_id,
             }, {headers : {'Authorization' : token} });
@@ -187,7 +187,7 @@ document.getElementById('premiumUser').onclick = async(e) => {
 
     rzp1.on('payment.failed', async (response) => {
         
-        await axios.post('http://localhost:3000/purchase/failedTransaction', {
+        await axios.post('http://3.84.94.78:3000/purchase/failedTransaction', {
 
             order_id:response.error.metadata.order_id,
             payment_id: response.error.metadata.payment_id
@@ -249,7 +249,7 @@ function creatingRowsForTable(expense,parentTagRow){
             try {
                 const token = localStorage.getItem('id');
                 // using axios to push data to backend
-                const response = await axios.get(`http://localhost:3000/expense/deleteExpense/${entry.id}`, { headers : {'Authorization' : token} });
+                const response = await axios.get(`http://3.84.94.78:3000/expense/deleteExpense/${entry.id}`, { headers : {'Authorization' : token} });
                 console.log(response);
             }
             catch(err){
@@ -329,7 +329,7 @@ async function getExpensePage(page){
     const expensePerPage = localStorage.getItem('expense-per-page') || 5;
 
     try{
-        const response = await axios.get(`http://localhost:3000/expense/getExpenses?page=${page}&perPage=${expensePerPage}`,{ headers : {'Authorization' : token} });
+        const response = await axios.get(`http://3.84.94.78:3000/expense/getExpenses?page=${page}&perPage=${expensePerPage}`,{ headers : {'Authorization' : token} });
         const parentTagRow = document.getElementById('table-body-expense');
         
         // creating rows

@@ -1,9 +1,7 @@
 const AWS = require('aws-sdk');
 require('dotenv').config();
 
-async function uploadToS3(fileData, fileName){
-    const accessKeyId = process.env.USER_ACCESS_KEY;
-    const secretAccessKey = process.env.USER_SECRET_KEY;
+exports.uploadToS3 = async (fileData, fileName) => {
 
     const s3bucket = new AWS.S3({
         accessKeyId : process.env.USER_ACCESS_KEY,
@@ -27,5 +25,3 @@ async function uploadToS3(fileData, fileName){
         });
     })
 };
-
-module.exports = uploadToS3;

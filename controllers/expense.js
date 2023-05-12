@@ -126,15 +126,11 @@ exports.downloadExpense = async (req,res,next) => {
         next();
     }
     catch(err){
-        console.log(err);
         return res.status(500).json({success : 'false', message : "Failed"});
     }
 };
 
 // async function uploadToS3(fileData, fileName){
-//     const BUCKET_NAME = "expensetracking-abhay";
-//     const USER_ACCESS_KEY = "AKIAYXSCVMEKSN2TGNOB";
-//     const USER_SECRET_KEY = "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";
 
 //     const s3bucket = new AWS.S3({
 //         accessKeyId : USER_ACCESS_KEY,

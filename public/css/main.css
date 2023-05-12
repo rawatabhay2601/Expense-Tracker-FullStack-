@@ -1,6 +1,7 @@
 body{
     color: white;
     background-image: url('../../views/images/444.jpg');
+    overflow-x:hidden
 }
 input{
     margin-bottom: 2rem;

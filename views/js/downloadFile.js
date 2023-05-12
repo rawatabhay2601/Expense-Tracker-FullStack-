@@ -7,7 +7,7 @@ async function downloadExpense(){
     const token = localStorage.getItem('id');
 
     try{
-        const response = await axios.get('http://localhost:3000/expense/downloadExpense', {headers : {'Authorization': token}});
+        const response = await axios.get('http://3.84.94.78:3000/expense/downloadExpense', {headers : {'Authorization': token}});
         if(response.status === 201){
             console.log('Download file');
             // creating a tag to click on the URL
@@ -17,12 +17,10 @@ async function downloadExpense(){
             a.click();
         }
         else{
-            console.log(data.message);
             alert('Something Went Wrong !!');
         }
     }
     catch(err){
-        console.log(err);
         alert("Someyhing went wrong !!");
     }
 };

@@ -2,12 +2,11 @@ const ListOfFiles = require('../models/listDownloadFile');
 
 exports.listOfFiles = async (req,res,next) => {
     try{
-        const userId = await req.user.id;
+        const userId = req.user.id;
         const response = await ListOfFiles.findAll({where : {userId : userId}});
         return res.status(201).json({success: response,message:'Successful'});
     }
     catch(err){
-        console.log(err);
         return res.status(500).json({message:'Failed'});
     }
 };
@@ -20,8 +19,7 @@ exports.addFileUrl = async (req,res) => {
         return res.status(201).json({success : fileUrl, message : "Successful"});
     }
     catch(err){
-        console.log(err);
-        alert('Something Went wrong !!')
+        alert('Something Went wrong !!');
         return res.status(500).json({success : 'false', message : "Failed"});
     }
 };

@@ -27,7 +27,9 @@ div.modal-header{
 body{
     color: white;
     background-image: url('../../views/images/444.jpg');
+    overflow-x:hidden
 }
+
 nav{
     background-color: cadetblue;
 }
