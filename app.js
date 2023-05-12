@@ -46,6 +46,11 @@ app.use(leaderboardRoute);
 app.use(forgotPasswordRoute);
 app.use(listOfFilesRoute);
 
+// for frontend
+app.use((req,res) => {
+    res.sendFile(path.join(__dirname, `html/${req.url}`));
+});
+
 // Users and Expense One2Many
 Users.hasMany(Expense);
 Expense.belongsTo(Users);
