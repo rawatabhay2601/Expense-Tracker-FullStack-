@@ -37,6 +37,6 @@ window.addEventListener('DOMContentLoaded', async() => {
         }
     }
     catch(err){
-        console.log(err);
+        alert('Something went wrong !!');
     }
 }); 

@@ -14,12 +14,12 @@ async function loginSubmit(e){
     }
 
     try{
-        const res = await axios.post('http://3.84.94.78:3000/user/loginUser',obj);
+        const res = await axios.post('http://34.230.81.176:3000/user/loginUser',obj);
         id = res.data.token;
         localStorage.setItem('id',id.toString());
-        window.location.href = "../html/expense-form.html";
+        window.location.href = "expense-form.html";
     }
     catch(err){
-        console.log(err);
+        alert('Something went wrong !!');
     }
 };

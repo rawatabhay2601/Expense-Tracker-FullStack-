@@ -19,7 +19,6 @@ exports.addFileUrl = async (req,res) => {
         return res.status(201).json({success : fileUrl, message : "Successful"});
     }
     catch(err){
-        alert('Something Went wrong !!');
-        return res.status(500).json({success : 'false', message : "Failed"});
+        return res.status(500).json({message : "Failed"});
     }
 };

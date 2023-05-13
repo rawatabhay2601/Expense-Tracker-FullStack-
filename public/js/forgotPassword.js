@@ -12,6 +12,6 @@ async function passwordReset(e){
         alert('E-Mail has been sent to reset password !!');
     }
     catch(err){
-        console.log(err);
+        alert('Something went wrong !!');
     }
 };

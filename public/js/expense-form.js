@@ -19,7 +19,7 @@ async function creatingExpense(e) {
     };
     
     try{
-        const response = await axios.post("http://3.84.94.78:3000/expense/addExpense",obj, {headers : {'Authorization' : token}});
+        const response = await axios.post("http://34.230.81.176:3000/expense/addExpense",obj, {headers : {'Authorization' : token}});
         expenseId = response.data.success.id;
 
         increaseCount();    //INCREASE COUNT FOR ROW NUMBER
@@ -65,7 +65,7 @@ async function creatingExpense(e) {
             
                 try {
                     // using axios to push data to CrudCrud
-                    const response = await axios.get(`http://3.84.94.78:3000/expense/deleteExpense/${expenseId}`, { headers : {'Authorization' : token} });
+                    const response = await axios.get(`http://34.230.81.176:3000/expense/deleteExpense/${expenseId}`, { headers : {'Authorization' : token} });
                     // decreasing count
                     decreaseCount();
                     // removing from the UI
@@ -108,7 +108,7 @@ window.addEventListener('DOMContentLoaded',async(e) => {
     const pagination = document.getElementById("pagination");
 
     try{
-        const response = await axios.get(`http://localhost:3000/expense/getExpenses?page=${page}&perPage=${expensePerPage}`, { headers : {'Authorization' : token} });
+        const response = await axios.get(`http://34.230.81.176:3000/expense/getExpenses?page=${page}&perPage=${expensePerPage}`, { headers : {'Authorization' : token} });
 
         // -----------------------------------------------------------------------------------------------------------
         // PREMIUM FEATURES
@@ -137,7 +137,7 @@ window.addEventListener('DOMContentLoaded',async(e) => {
         showPagination(response.data)
     }
     catch(err){
-        console.log(err);
+        alert('Something went wrong !!');
     }
 });
 

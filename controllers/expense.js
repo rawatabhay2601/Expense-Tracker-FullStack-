@@ -16,7 +16,6 @@ function isvalidString(str){
     }
 };
 
-
 exports.addExpense = async(req,res,next) => {
 
     const userId = req.user.dataValues.id;
@@ -43,14 +42,13 @@ exports.addExpense = async(req,res,next) => {
         }
         catch(err){
             await t.rollback();
-            return res.status(500).json({success:err,message:'Failed'});
+            return res.status(500).json({message:'Failed'});
         }
     }
     else{
-        return res.status(500).json({message:'Invalid Input Values !!'});
+        return res.status(501).json({message:'Invalid Input Values !!'});
     }
 };
-
 
 exports.getExpenses = async(req,res,next) => {
     
@@ -82,10 +80,9 @@ exports.getExpenses = async(req,res,next) => {
         });
     }
     catch(err){
-        return res.status(500).json({success:err, message:'Failed'});
+        return res.status(500).json({ message:'Failed'});
     }
 };
-
 
 exports.deleteExpense = async (req,res,next) => {
     const t = await sequelize.transaction();
@@ -112,7 +109,7 @@ exports.deleteExpense = async (req,res,next) => {
 
         // transaction rollback
         await t.rollback();
-        return res.status(500).json({success:err, message:'Failed'});
+        return res.status(500).json({message:'Failed'});
     }
 };
 
@@ -126,32 +123,6 @@ exports.downloadExpense = async (req,res,next) => {
         next();
     }
     catch(err){
-        return res.status(500).json({success : 'false', message : "Failed"});
+        return res.status(500).json({message : 'Failed'});
     }
 };
-
-// async function uploadToS3(fileData, fileName){
-
-//     const s3bucket = new AWS.S3({
-//         accessKeyId : USER_ACCESS_KEY,
-//         secretAccessKey : USER_SECRET_KEY
-//     });
-
-//     var params = {
-//         Bucket : BUCKET_NAME,
-//         Key : fileName,
-//         Body : fileData,
-//         ACL:"public-read"
-//     }
-//     return new Promise( (resolve, reject) => {
-
-//         s3bucket.upload(params , (err , s3Response) => {
-//             if(err) reject("Upload failed : ",err)
-//             else {
-//                 console.log("Succesfully uploaded : ",s3Response);
-//                 resolve(s3Response.Location);
-//             }
-//         });
-//     })
-
-// };

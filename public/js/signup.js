@@ -16,10 +16,10 @@ async function signupSubmit(e){
     }
 
     try{
-        await axios.post('http://3.84.94.78:3000/user/postUser',obj);
-        window.location.href = "../html/login.html";
+        await axios.post('http://34.230.81.176:3000/user/postUser',obj);
+        window.location.href = "login.html";
     }
     catch(err){
-        console.log(err);
+        alert('Something went wrong !!');
     }
 }

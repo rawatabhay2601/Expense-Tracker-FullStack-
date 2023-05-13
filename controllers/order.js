@@ -3,7 +3,6 @@ const Razorpay = require('razorpay');
 require('dotenv').config();
 
 exports.purchasePremium = async (req,res) => {
-
     try{
         var rzp = new Razorpay({
             key_id : process.env.RAZORPAY_KEY_ID,
@@ -22,15 +21,14 @@ exports.purchasePremium = async (req,res) => {
                     return res.status(201).json({order, key_id : rzp.key_id})
                 }
                 catch(err){
-                    console.log(err);
+                    return res.status(500).json({message:"Failed"})
                 }
             }
         });
     }
 
     catch(err){
-        console.log(err);
-        res.status(403).json({message : 'Something went wrong', error : err});
+        res.status(501).json({message : 'Failed'});
     }
 };
 
@@ -51,8 +49,7 @@ exports.updateTranscation = async (req,res) => {
         })
     }
     catch(err){
-        console.log(err);
-        res.status(403).json({error : err, message : 'Something went wrong !!'})
+        res.status(403).json({message : 'Failed'})
     }
 };
 
@@ -72,7 +69,6 @@ exports.failedTranscation = async (req,res) => {
         // })
     }
     catch(err){
-        console.log(err);
-        res.status(403).json({error : err, message : 'Something went wrong !!'})
+        res.status(403).json({message : 'Failed'})
     }
 };

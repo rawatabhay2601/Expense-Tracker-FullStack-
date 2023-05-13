@@ -23,7 +23,7 @@ const orderRoute = require('./routes/orderRoute');
 const leaderboardRoute = require('./routes/leadersboardRoute');
 const userRoute = require('./routes/userRoutes');
 const expenseRoute = require('./routes/expenseRoutes');
-const forgotPasswordRoute = require('./routes/forgotPassword')
+const forgotPasswordRoute = require('./routes/forgotPassword');
 const listOfFilesRoute = require('./routes/listOfFiles');
 
 // creating stream for logging requests
@@ -37,7 +37,14 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(morgan('combined', {stream : accessLogStream}));
 app.use(helmet());
+app.use(express.static(path.join(__dirname, 'public')));
 
+// giving access to the axios
+app.use(function(req, res, next) {
+    res.setHeader("Content-Security-Policy", "script-src 'self' https://cdn.jsdelivr.net/");
+    next();
+});
+  
 // Calling routes in these middleware
 app.use(userRoute);
 app.use(expenseRoute);
@@ -46,9 +53,10 @@ app.use(leaderboardRoute);
 app.use(forgotPasswordRoute);
 app.use(listOfFilesRoute);
 
-// for frontend
+// FOR FRONTEND
 app.use((req,res) => {
-    res.sendFile(path.join(__dirname, `views/html/${req.url}`));
+    console.log(req.url)
+    res.sendFile(path.join(__dirname, `views/${req.url}`));
 });
 
 // Users and Expense One2Many

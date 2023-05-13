@@ -11,7 +11,7 @@ async function showFilesDownloaded(){
         creatingRowsForTable(response.data.success, parentTagBody);
     }
     catch(err){
-        console.log(err);
+        alert('Something went wrong !!');
     }
 };
 
