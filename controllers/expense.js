@@ -90,7 +90,7 @@ exports.deleteExpense = async (req,res,next) => {
         let totalExpense = parseFloat(req.user.totalExpense);
         const id = req.params.expensePK;
 
-        // calculating the new total expense
+       // calculating the new total expense
         const expense = await Expense.findOne({where : {id:id}}, {attributes : ['amount']});
         const amount = parseFloat(expense.amount);
         totalExpense = totalExpense - amount;
@@ -103,7 +103,7 @@ exports.deleteExpense = async (req,res,next) => {
         
         // transaction commit
         await t.commit();
-        return res.status(201).json({success:'Successful'});
+        return res.status(201).json({message:'Successful'});
     }
     catch(err){
 
