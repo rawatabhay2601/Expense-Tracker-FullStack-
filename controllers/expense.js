@@ -97,13 +97,13 @@ exports.deleteExpense = async (req,res,next) => {
         
         // update with transaction
         await UserService.updateUser(req,{totalExpense : totalExpense},{transaction:t});
-
+        
         // deleting expense record from the expense table
         await ExpenseService.deleteExpense({where : {id : id}}, {transaction:t});
         
         // transaction commit
         await t.commit();
-        return res.status(201).json({success:'true', message:'Successful'});
+        return res.status(201).json({success:'Successful'});
     }
     catch(err){
 

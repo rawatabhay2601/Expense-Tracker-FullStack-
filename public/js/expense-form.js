@@ -245,16 +245,14 @@ function creatingRowsForTable(expense,parentTagRow){
 
         // deleting li tag
         del.onclick = async (e) => {
-
-            try {
+            
+            try{
                 const token = localStorage.getItem('id');
                 // using axios to push data to backend
-                const response = await axios.get(`http://3.84.94.78:3000/expense/deleteExpense/${entry.id}`, { headers : {'Authorization' : token} });
-                console.log(response);
+                await axios.get(`http://3.84.94.78:3000/expense/deleteExpense/${entry.id}`,{ headers : {'Authorization' : token} });
             }
             catch(err){
-                alert('Something went wrong !!')
-                console.log(err);
+                alert('Something went wrong !!');
             }
 
             e.target.parentElement.parentElement.remove();
