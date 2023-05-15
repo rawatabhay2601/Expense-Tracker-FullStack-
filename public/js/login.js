@@ -14,7 +14,7 @@ async function loginSubmit(e){
     }
 
     try{
-        const res = await axios.post('http://34.230.81.176:3000/user/loginUser',obj);
+        const res = await axios.post('http://54.90.161.155:3000/user/loginUser',obj);
         id = res.data.token;
         localStorage.setItem('id',id.toString());
         window.location.href = "expense-form.html";

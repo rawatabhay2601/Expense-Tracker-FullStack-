@@ -45,11 +45,11 @@ exports.updateTranscation = async (req,res) => {
             return res.status(202).json({success : true, message : 'Transaction Successful'})
         })
         .catch( (err) => {
-            throw new Error(err);
+            return res.status(500).json({message:'Failed'});
         })
     }
     catch(err){
-        res.status(403).json({message : 'Failed'})
+        return res.status(403).json({message : 'Failed'})
     }
 };
 

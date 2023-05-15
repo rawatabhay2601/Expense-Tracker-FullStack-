@@ -16,7 +16,7 @@ window.addEventListener('DOMContentLoaded', async() => {
     }
 
     try{
-        response = await axios.get('http://34.230.81.176:3000/leaderboard/getLeaders');
+        response = await axios.get('http://54.90.161.155:3000/leaderboard/getLeaders');
         
         // clearing the leaders table
         leaderParentTag.innerHTML = "";

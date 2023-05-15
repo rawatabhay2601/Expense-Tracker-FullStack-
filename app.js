@@ -36,15 +36,16 @@ const accessLogStream = fs.createWriteStream(
 app.use(cors());
 app.use(bodyParser.json());
 app.use(morgan('combined', {stream : accessLogStream}));
-app.use(helmet());
+// app.use(helmet());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// giving access to the axios
-app.use(function(req, res, next) {
-    res.setHeader("Content-Security-Policy", "script-src 'self' https://cdn.jsdelivr.net/");
-    next();
-});
-  
+// // giving access to the axios
+// app.use(function(req, res, next) {
+//     res.setHeader("Content-Security-Policy", "script-src 'self' https://cdn.jsdelivr.net/");
+//     next();
+// });
+
+
 // Calling routes in these middleware
 app.use(userRoute);
 app.use(expenseRoute);
@@ -55,7 +56,6 @@ app.use(listOfFilesRoute);
 
 // FOR FRONTEND
 app.use((req,res) => {
-    console.log(req.url)
     res.sendFile(path.join(__dirname, `views/${req.url}`));
 });
 
