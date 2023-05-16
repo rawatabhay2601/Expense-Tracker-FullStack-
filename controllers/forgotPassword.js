@@ -19,7 +19,7 @@ exports.forgotPassword = async(req,res,next) => {
         
         // getting user with input email ID
         const user = await User.findOne({where : {email : email}});
-        
+
         // if user exists we will create an entry in the 
         if(user) {
             
@@ -43,7 +43,7 @@ exports.forgotPassword = async(req,res,next) => {
                     sender,
                     to : receivers,
                     subject : "Forgot Password",
-                    htmlContent : `<div>Click on the link to reset the password : </div><a href="http://localhost:3000/password/resetPassword/${id}">Reset Password</a>`
+                    htmlContent : `<div>Click on the link to reset the password : </div><a href="http://54.90.161.155:3000/password/resetPassword/${id}">Reset Password</a>`
                 });
 
                 return res.status(201).json({success : response, message : "Successful"});
