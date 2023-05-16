@@ -29,11 +29,29 @@
             <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar mx-auto" >
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0" style="margin-left: 3rem;">
 
                     <!-- ADD NAVBAR LINKS-->
-                    <a class="nav-link" href = "expense-form.html">Home</a>
-                    <a class="nav-link active" href = "listOfFiles.html">List of Files</a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="expense-form.html" id="home">Home</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" style="display:none;" href="leaderboard.html" id="leaderboard">Leaderboard</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link active" style="display:none;" href="listOfFiles.html" id="downloads-history">Downloads History</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <button class="nav-link" style="display:none;" id="premiumDownloadBtn">Download File</button>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="login.html" id="login">Login</a>
+                    </li>
+
                 </ul>
                 <button type="button" class="btn btn-light" style="display: none;" id="premiumDownloadBtn">Download file</button>
             </div>

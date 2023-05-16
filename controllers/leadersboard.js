@@ -6,7 +6,7 @@ exports.getLeaders = async (req,res) => {
             SELECT users.name AS name, totalExpense FROM users ORDER BY totalExpense DESC;`
         );
     
-        return res.status(201).json({ message:'Successful' });
+        return res.status(201).json({ message:'Successful' ,success: results});
     }
     catch(err){
         return res.status(500).json({ message:'Failed' });

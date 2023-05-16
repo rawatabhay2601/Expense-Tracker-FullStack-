@@ -7,7 +7,7 @@ async function showFilesDownloaded(){
     const parentTagBody = document.getElementById('table-body-files');
     const token = localStorage.getItem('id');
     try{
-        const response = await axios.get('http://54.90.161.155:3000/download/ListOfFiles', {headers : {'Authorization': token}});
+        const response = await axios.get('http://localhost:3000/download/ListOfFiles', {headers : {'Authorization': token}});
         creatingRowsForTable(response.data.success, parentTagBody);
     }
     catch(err){
@@ -18,6 +18,23 @@ async function showFilesDownloaded(){
 function creatingRowsForTable(expense,parentTag){
     // clearing the old data
     parentTag.innerHTML = "";
+
+    // PREMIUM FEATURES
+    const premiumBtn = document.getElementById('premiumUser').parentElement;
+    const downloadPremiumBtn = document.getElementById("premiumDownloadBtn");
+    const leaderboard = document.getElementById('leaderboard');
+    const downloadHistory = document.getElementById('downloads-history');
+
+    if(ispremium == true){
+
+        // removing premium buy button
+        premiumBtn.remove();
+
+        // displaying all the buttons in the navbar
+        leaderboard.style = 'display:block';
+        downloadPremiumBtn.style = 'display:block';
+        downloadHistory.style = 'display:block';
+    }
 
     for(let i of expense){
 

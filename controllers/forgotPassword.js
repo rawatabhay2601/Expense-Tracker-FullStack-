@@ -10,14 +10,13 @@ exports.forgotPassword = async(req,res,next) => {
     try{
         // email ID from the frontend where email is to be delivered
         const {email} = req.body;
-        console.log('Email :', email);
 
-        const client = Sib.ApiClient.instance;  //client instance
-        const apiKey = client.authentications['api-key']; // api key object
-        apiKey.apiKey = process.env.SEND_EMAIL_API_KEY;   //getting the api key from .env file
-    
+        const client = Sib.ApiClient.instance;      //client instance
+        const apiKey = client.authentications['api-key'];      //api key object
+        apiKey.apiKey = process.env.SEND_EMAIL_API_KEY;      //getting the api key from .env file
+        
         const tranEmailApi = new Sib.TransactionalEmailsApi();
-    
+        
         // getting user with input email ID
         const user = await User.findOne({where : {email : email}});
         
@@ -26,7 +25,7 @@ exports.forgotPassword = async(req,res,next) => {
             
             const id = uuid.v4();
             await user.createForgotpassword({id : id, active : true});
-    
+            
             // sender's email
             const sender = {
                 email : process.env.SENDER_EMAIL
@@ -44,20 +43,19 @@ exports.forgotPassword = async(req,res,next) => {
                     sender,
                     to : receivers,
                     subject : "Forgot Password",
-                    htmlContent : `<div>Click on the link to reset the password : </div><a href="http://54.90.161.155:3000/password/resetPassword/${id}">Reset Password</a>`
+                    htmlContent : `<div>Click on the link to reset the password : </div><a href="http://localhost:3000/password/resetPassword/${id}">Reset Password</a>`
                 });
-                
+
                 return res.status(201).json({success : response, message : "Successful"});
             }
             catch(err){
-                return res.status(500).json({message : "Failed"});
+                return res.status(500).json({message : "Failed",success : err});
             }
         }
         else{
-            alert('No Such User Exists !!');
+            return res.status(500).json({message : "No Such User Exists",success : err});
         }
     }
-
     catch(err){
         return res.status(501).json({message:'Failed'})
     }
@@ -66,15 +64,13 @@ exports.forgotPassword = async(req,res,next) => {
 exports.resetPassword = async (req,res,next) => {
 
     const id =  req.params.id;
-    console.log('Hello from the reset password !!', id);
 
     try{
         const fgtpassword = await Forgotpassword.findOne({ where : { id : id }});
 
-        console.log('FGT Password : ',fgtpassword);
         if(fgtpassword){
             await fgtpassword.update({ active: false});
-            res.status(200).send(`<html>
+            return res.status(200).send(`<html>
                                     <script>
                                         function submitted(e){
                                             e.preventDefault();
@@ -87,7 +83,6 @@ exports.resetPassword = async (req,res,next) => {
                                     </form>
                                 </html>`
             );
-            res.end();
         }
     }
     catch(err){
@@ -109,18 +104,20 @@ exports.updatePassword = async (req,res,next) => {
         if(user) {
 
             //encrypting the password using bcrypt
-            
-            bcrypt.hash(newpassword, process.env.SALT_ROUNDS, async (err, hash) => {
-                
-                if(err){
-                    throw new Error(err);
-                }
-                await user.update({ password: hash });
-                return res.status(201).json({message: 'Successfuly update the new password'});
+            bcrypt.genSalt(parseInt(process.env.SALT_ROUNDS), (err, salt) => {
+                bcrypt.hash(newpassword, salt, async (err, hash) => {
+                    
+                    if(err){
+                        return res.status(405).json({ message: 'Error creating new pasword !!'});
+                    }
+
+                    await user.update({ password: hash });
+                    return res.status(201).json({message: 'Successfuly update the new password'});
+                });
             });
         }
         else{
-            return res.status(404).json({ error: 'No user Exists', success: false})
+            return res.status(404).json({ message: 'No user Exists'})
         }
     }
 
