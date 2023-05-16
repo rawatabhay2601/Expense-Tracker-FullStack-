@@ -165,19 +165,19 @@ document.getElementById('premiumUser').onclick = async(e) => {
             }, {headers : {'Authorization' : token} })
 
                 // removing premium button
-                premiumBtn.parentElement.remove();
-                
-                //displaying the download button
-                downloadBtn.style = "display:block";
-                //displaying the download button
-                leaderboard.style = "display:block";
-                //displaying the downloads history button
-                downloadHistory.style = "display:block";
+            premiumBtn.parentElement.remove();
+            
+            //displaying the download button
+            downloadBtn.style = "display:block";
+            //displaying the download button
+            leaderboard.style = "display:block";
+            //displaying the downloads history button
+            downloadHistory.style = "display:block";
 
-                localStorage.setItem('isPremium','true'); // adding message to the local Storage
-                
-                // setting up an alert
-                alert('You are a Premium User Now !!');
+            localStorage.setItem('isPremium','true'); // adding message to the local Storage
+            
+            // setting up an alert
+            alert('You are a Premium User Now !!');
         }
     }
 
