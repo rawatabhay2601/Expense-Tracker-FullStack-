@@ -76,6 +76,10 @@ async function creatingExpense(e) {
                 }
             }
         }
+        else{
+            // this will show pagination
+            window.location.reload();
+        }
     }
 
     catch(err){
