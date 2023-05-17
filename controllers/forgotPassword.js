@@ -103,7 +103,7 @@ exports.updatePassword = async (req,res,next) => {
         
         if(user) {
 
-            //encrypting the password using bcrypt
+            //encrypting the password using bcrypt and genSalt
             bcrypt.genSalt(parseInt(process.env.SALT_ROUNDS), (err, salt) => {
                 bcrypt.hash(newpassword, salt, async (err, hash) => {
                     
