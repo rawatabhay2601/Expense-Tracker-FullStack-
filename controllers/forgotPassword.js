@@ -10,10 +10,10 @@ exports.forgotPassword = async(req,res,next) => {
     try{
         // email ID from the frontend where email is to be delivered
         const {email} = req.body;
-
+        console.log(email);
         const client = Sib.ApiClient.instance;      //client instance
-        const apiKey = client.authentications['api-key'];      //api key object
-        apiKey.apiKey = process.env.SEND_EMAIL_API_KEY;      //getting the api key from .env file
+        const apiKey = client.authentications['api-key'];    //api key object
+        apiKey.apiKey = process.env.SEND_EMAIL_API_KEY;    //getting the api key from .env file
         
         const tranEmailApi = new Sib.TransactionalEmailsApi();
         
@@ -30,7 +30,7 @@ exports.forgotPassword = async(req,res,next) => {
             const sender = {
                 email : process.env.SENDER_EMAIL
             };
-            
+            console.log(sender);
             // receiver's email
             const receivers = [
                 {
