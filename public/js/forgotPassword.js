@@ -7,7 +7,7 @@ async function passwordReset(e){
     
     try{
         const email = document.getElementById('email').value;
-        const response = await axios.post('http://3.82.35.137:3000/password/forgotpassword',{email});
+        const response = await axios.post('http://184.73.146.55:3000/password/forgotpassword',{email});
     
         alert('E-Mail has been sent to reset password !!');
     }

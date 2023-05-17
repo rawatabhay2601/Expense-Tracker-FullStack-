@@ -7,7 +7,7 @@ async function showFilesDownloaded(){
     const parentTagBody = document.getElementById('table-body-files');
     const token = localStorage.getItem('id');
     try{
-        const response = await axios.get('http://3.82.35.137:3000/download/ListOfFiles', {headers : {'Authorization': token}});
+        const response = await axios.get('http://184.73.146.55:3000/download/ListOfFiles', {headers : {'Authorization': token}});
         console.log(response);
         creatingRowsForTable(response.data.success, parentTagBody);
     }

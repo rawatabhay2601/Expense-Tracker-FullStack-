@@ -43,7 +43,7 @@ exports.forgotPassword = async(req,res,next) => {
                     sender,
                     to : receivers,
                     subject : "Forgot Password",
-                    htmlContent : `<div>Click on the link to reset the password : </div><a href="http://3.82.35.137:3000/password/resetPassword/${id}">Reset Password</a>`
+                    htmlContent : `<div>Click on the link to reset the password : </div><a href="http://184.73.146.55:3000/password/resetPassword/${id}">Reset Password</a>`
                 });
 
                 return res.status(201).json({success : response, message : "Successful"});

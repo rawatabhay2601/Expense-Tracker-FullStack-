@@ -7,7 +7,7 @@ async function downloadExpense(){
     const token = localStorage.getItem('id');
 
     try{
-        const response = await axios.get('http://3.82.35.137:3000/expense/downloadExpense', {headers : {'Authorization': token}});
+        const response = await axios.get('http://184.73.146.55:3000/expense/downloadExpense', {headers : {'Authorization': token}});
         if(response.status === 201){
             console.log('Download file');
             // creating a tag to click on the URL
