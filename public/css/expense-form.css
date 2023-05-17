@@ -50,6 +50,7 @@ li.nav-item{
 }
 a.nav-link.active{
     font-weight: 600;
+    color:azure
 }
 #expense-per-page{
     max-width: 20%;
