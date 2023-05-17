@@ -49,11 +49,11 @@ exports.forgotPassword = async(req,res,next) => {
                 return res.status(201).json({success : response, message : "Successful"});
             }
             catch(err){
-                return res.status(500).json({message : "Failed",success : err});
+                return res.status(500).json({message : "Failed in sending Email"});
             }
         }
         else{
-            return res.status(500).json({message : "No Such User Exists",success : err});
+            return res.status(500).json({message : "No Such User Exists"});
         }
     }
     catch(err){
