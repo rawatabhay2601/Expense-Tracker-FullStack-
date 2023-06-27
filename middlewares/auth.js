@@ -7,7 +7,7 @@ exports.authenticate = async (req,res,next) => {
     try{
         const token = req.headers['authorization'];
         const userIdObj = jwt.verify(token,process.env.ENCRYPTIONKEY);
-        const user = await User.findByPk(userIdObj.userId);
+        const user = await User.findOne({_id:userIdObj.userId});
         req.user = user;
         next();
     }

@@ -1,10 +1,8 @@
 const Expense = require("../models/expense");
-const sequelize = require("../util/database");
+const User = require("../models/users");
 require('dotenv').config();
 
 // services
-const ExpenseService = require('../services/expenseServices');
-const UserService = require('../services/UserServices');
 const S3Service = require('../services/s3Services');
 
 function isvalidString(str){
@@ -18,31 +16,32 @@ function isvalidString(str){
 
 exports.addExpense = async(req,res,next) => {
 
-    const userId = req.user.dataValues.id;
-    let totalExpense = parseFloat(req.user.dataValues.totalExpense);
+    const userId = req.user._id;
+    let totalExpense = parseFloat(req.user.totalExpense);
     
-    const t = await sequelize.transaction();
     const amount = req.body.amount;
     const description = req.body.description;
     const type = req.body.type;
 
     if( isvalidString(amount) && isvalidString(description) && isvalidString(type) && isvalidString(userId)){
+        
         try{
-            // creating expense
-            const response = await Expense.create({amount:amount, description:description, type:type, userId:userId}, {transaction:t});
+            // creating expense promise
+            const promiseExpense = Expense.create({amount:amount, description:description, type:type, userId:userId});
             
             // updating the total expense
-            totalExpense += parseFloat(amount);
-            await req.user.update({totalExpense:totalExpense},{transaction:t});
-            
-            // transaction commit
-            await t.commit();
-            
-            return res.status(201).json({success:response,message:'Successful'});
+            totalExpense += parseInt(amount);
+            req.user.totalExpense = totalExpense;
+
+            const promiseUser =  req.user.save(); 
+
+            const [resExpense, _] = await Promise.all([promiseExpense,promiseUser]);
+
+            return res.status(201).json({ success:resExpense,message:'Successful'});
         }
         catch(err){
-            await t.rollback();
-            return res.status(500).json({message:'Failed'});
+            console.log(err);
+            return res.status(500).json({message:'Failed',err: err});
         }
     }
     else{
@@ -53,21 +52,17 @@ exports.addExpense = async(req,res,next) => {
 exports.getExpenses = async(req,res,next) => {
     
     const page = parseInt(req.query.page);
-    const userId = req.user.dataValues.id;
-    const ispremium = req.user.dataValues.ispremium;
+    const ispremium = req.user.ispremium;
     const ITEMS_PER_PAGE = parseInt(req.query.perPage);
+    const offset = (page-1)*ITEMS_PER_PAGE;
+    const limit = ITEMS_PER_PAGE;
 
     try{
         // getting the count of expenses added
-        const totalExpense = await ExpenseService.expensesCount({where : {userId : userId}});
+        const totalExpense = req.user.totalExpense;
 
-        const params = {
-            where : {userId : userId},
-            offset : (page-1)*ITEMS_PER_PAGE,
-            limit : ITEMS_PER_PAGE,
-        };
         // response is an array
-        const expensesPerPage = await ExpenseService.getExpenses(params);
+        const expensesPerPage = await Expense.find().skip(offset).limit(limit);
         return res.status(201).json({
             success : expensesPerPage,
             ispremium : ispremium,
@@ -80,42 +75,44 @@ exports.getExpenses = async(req,res,next) => {
         });
     }
     catch(err){
+        console.log(err);
         return res.status(500).json({ message:'Failed'});
     }
 };
 
 exports.deleteExpense = async (req,res,next) => {
-    const t = await sequelize.transaction();
+
     try{
-        let totalExpense = parseFloat(req.user.totalExpense);
+
+        let totalExpense = parseInt(req.user.totalExpense);
+        
         const id = req.params.expensePK;
 
        // calculating the new total expense
-        const expense = await Expense.findOne({where : {id:id}}, {attributes : ['amount']});
-        const amount = parseFloat(expense.amount);
+        const amt = await Expense.findOne({ _id : id });
+        const amount = amt.amount;
         totalExpense = totalExpense - amount;
         
-        // update with transaction
-        await UserService.updateUser(req,{totalExpense : totalExpense},{transaction:t});
+        // update total expense for the user
+        req.user.totalExpense = totalExpense;
+        const promiseUser = await req.user.save();
         
         // deleting expense record from the expense table
-        await ExpenseService.deleteExpense({where : {id : id}}, {transaction:t});
+        const promiseExpense = Expense.deleteOne({ _id : id });
         
-        // transaction commit
-        await t.commit();
+        await Promise.all([promiseExpense, promiseUser]);
         return res.status(201).json({message:'Successful'});
     }
     catch(err){
-
-        // transaction rollback
-        await t.rollback();
-        return res.status(500).json({message:'Failed'});
+        return res.status(500).json({message:'Failed', err: err});
     }
 };
 
+// CHECK
 exports.downloadExpense = async (req,res,next) => {
     try{
-        const expenses = await req.user.getExpenses();
+        const id = req.user._id;
+        const expenses = await Expense.find({ _id:id });
         const stringfiedData = JSON.stringify(expenses);
         const fileName = `Expenses${req.user.id}/${JSON.stringify(new Date())}.txt`
         const fileUrl = await S3Service.uploadToS3(stringfiedData, fileName);

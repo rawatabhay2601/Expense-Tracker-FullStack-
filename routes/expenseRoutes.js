@@ -8,6 +8,6 @@ const userAuthorization = require('../middlewares/auth');
 router.post('/expense/addExpense', userAuthorization.authenticate, ExpenseController.addExpense);
 router.get('/expense/getExpenses', userAuthorization.authenticate, ExpenseController.getExpenses);
 router.get('/expense/deleteExpense/:expensePK',userAuthorization.authenticate, ExpenseController.deleteExpense);
-router.get('/expense/downloadExpense', userAuthorization.authenticate, ExpenseController.downloadExpense, fileUrlController.addFileUrl);
+// router.get('/expense/downloadExpense', userAuthorization.authenticate, ExpenseController.downloadExpense, fileUrlController.addFileUrl);
 
 module.exports = router;

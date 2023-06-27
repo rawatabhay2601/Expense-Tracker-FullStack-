@@ -1,4 +1,4 @@
-const sequelize = require('../util/database');
+
 
 exports.getLeaders = async (req,res) => {
     try{
