@@ -16,8 +16,8 @@ exports.uploadToS3 = async (fileData, fileName) => {
     }
     return new Promise( (resolve, reject) => {
 
-        s3bucket.upload(params , (err , s3Response) => {
-            if(err) reject("Upload failed : ",err)
+        s3bucket.upload(params, (err, s3Response) => {
+            if(err) reject("Upload failed : ", err)
             else {
                 console.log("Succesfully uploaded : ",s3Response);
                 resolve(s3Response.Location);

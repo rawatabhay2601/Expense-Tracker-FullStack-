@@ -8,10 +8,10 @@ async function showFilesDownloaded(){
     const token = localStorage.getItem('id');
     try{
         const response = await axios.get('http://localhost:3000/download/ListOfFiles', {headers : {'Authorization': token}});
-        creatingRowsForTable(response.data.success, parentTagBody);
+        return creatingRowsForTable(response.data.success, parentTagBody);
     }
     catch(err){
-        alert('Something went wrong !!');
+        return alert('Something went wrong !!');
     }
 };
 

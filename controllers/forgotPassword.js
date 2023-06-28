@@ -10,7 +10,6 @@ exports.forgotPassword = async(req,res,next) => {
     try{
         // email ID from the frontend where email is to be delivered
         const {email} = req.body;
-        console.log('Email :', email);
 
         const client = Sib.ApiClient.instance;  //client instance
         const apiKey = client.authentications['api-key']; // api key object
@@ -19,13 +18,12 @@ exports.forgotPassword = async(req,res,next) => {
         const tranEmailApi = new Sib.TransactionalEmailsApi();
     
         // getting user with input email ID
-        const user = await User.findOne({where : {email : email}});
+        const user = await User.findOne({email : email});
         
         // if user exists we will create an entry in the 
         if(user) {
             
-            const id = uuid.v4();
-            await user.createForgotpassword({id : id, active : true});
+            const passwordId = uuid.v4();
     
             // sender's email
             const sender = {
@@ -40,24 +38,26 @@ exports.forgotPassword = async(req,res,next) => {
             ];
 
             try{
-                const response = await tranEmailApi.sendTransacEmail({
+                const passwordPromise = Forgotpassword.create({ passwordId : passwordId, active : true, userId: user._id });
+                const emailPromise = tranEmailApi.sendTransacEmail({
                     sender,
                     to : receivers,
                     subject : "Forgot Password",
-                    htmlContent : `<div>Click on the link to reset the password : </div><a href="http://localhost:3000/password/resetPassword/${id}">Reset Password</a>`
+                    htmlContent : `<div>Click on the link to reset the password : </div><a href="http://localhost:3000/password/resetPassword/${passwordId}/${user._id}">Reset Password</a>`
                 });
                 
+                const [_ , response] = await Promise.all([passwordPromise, emailPromise]);
                 return res.status(201).json({success : response, message : "Successful"});
             }
             catch(err){
+                console.log(err);
                 return res.status(500).json({message : "Failed"});
             }
         }
         else{
-            alert('No Such User Exists !!');
+            return alert('No Such User Exists !!');
         }
     }
-
     catch(err){
         return res.status(501).json({message:'Failed'})
     }
@@ -65,66 +65,58 @@ exports.forgotPassword = async(req,res,next) => {
 
 exports.resetPassword = async (req,res,next) => {
 
-    const id =  req.params.id;
-    console.log('Hello from the reset password !!', id);
+    const passwordId =  req.params.id;
+    const userId = req.params.userId;
 
     try{
-        const fgtpassword = await Forgotpassword.findOne({ where : { id : id }});
+        await Forgotpassword.findOneAndUpdate({ passwordId: passwordId }, { active: false });
+    
+        res.status(200).send(`
+            <html>
+                
+                <form action="/password/updatePassword/${userId}" method="get">
+                    <label for="newpassword">Enter New password</label>
+                    <input name="newpassword" type="password" required></input>
+                    <button>reset password</button>
+                </form>
 
-        console.log('FGT Password : ',fgtpassword);
-        if(fgtpassword){
-            await fgtpassword.update({ active: false});
-            res.status(200).send(`<html>
-                                    <script>
-                                        function submitted(e){
-                                            e.preventDefault();
-                                        }
-                                    </script>
-                                    <form action="/password/updatePassword/${id}" method="get">
-                                        <label for="newpassword">Enter New password</label>
-                                        <input name="newpassword" type="password" required></input>
-                                        <button>reset password</button>
-                                    </form>
-                                </html>`
-            );
-            res.end();
-        }
+            </html>`
+        );
+        return res.end();
     }
-    catch(err){
-        return res.status(500).json({message:'Failed'})
+    catch(err) {
+        return res.status(500).json({ message:'Failed' })
     }
 };
 
 exports.updatePassword = async (req,res,next) => {
 
     try {
+
+        const { userId } = req.params;
         const { newpassword } = req.query;
-        const { resetpasswordid } = req.params;
-
-
-        const resetPassword = await Forgotpassword.findOne({ where : { id: resetpasswordid }});
-        // Forgotpassword.findOne({ where : { id: resetpasswordid }}).then(resetpasswordrequest => { 
-        const user = await User.findOne({where: { id : resetPassword.userId}})
         
-        if(user) {
+        //encrypting the password using bcrypt
+        bcrypt.genSalt(parseInt(process.env.SALT_ROUNDS), (err, salt) => {
 
-            //encrypting the password using bcrypt
-            
-            bcrypt.hash(newpassword, process.env.SALT_ROUNDS, async (err, hash) => {
+            if(err) {
+                return res.status(501).json({message: 'Failed in creating salt for password', error: err});
+            }
+            bcrypt.hash(newpassword, salt, async (err, hash) => {
                 
                 if(err){
-                    throw new Error(err);
+                    return res.status(502).json({message: 'Failed in creating hash password', error: err});
                 }
-                await user.update({ password: hash });
-                return res.status(201).json({message: 'Successfuly update the new password'});
+
+                await User.findOneAndUpdate( { _id: userId }, { password: hash });
+                res.status(201).json({message: 'Successfuly update the new password'});
+                return window.location.href = '/html/expense-form.html';
             });
-        }
-        else{
-            return res.status(404).json({ error: 'No user Exists', success: false})
-        }
+        });
     }
 
-    catch(error){
-        return res.status(500).json({message : 'Failed' });
+    catch(err) {
+
+        return res.status(500).json({ message : 'Failed' });
     }
 };

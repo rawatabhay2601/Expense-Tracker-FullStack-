@@ -1,17 +1,15 @@
-// const Sequelize = require('sequelize');
+const mongoose = require('mongoose');
 
+const ListOfFilesSchema = new mongoose.Schema({
+    url: {
+        type: String,
+        required: true
+    },
+    userId : {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    }
+});
 
-// const ListOfFiles = sequelize.define('listoffiles', {
-//     id:{
-//         type: Sequelize.INTEGER,
-//         primaryKey:true,
-//         autoIncrement:true,
-//         allowNull:false
-//     },
-//     url: {
-//         type: Sequelize.STRING,
-//         allowNull: false
-//     }
-// });
-
-// module.exports = ListOfFiles;
+module.exports = mongoose.model('ListOfFile', ListOfFilesSchema);

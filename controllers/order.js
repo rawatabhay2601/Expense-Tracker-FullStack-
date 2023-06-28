@@ -17,7 +17,7 @@ exports.purchasePremium = async (req,res) => {
             }
             else{
                 try{
-                    await Order.create({ orderid : order.id, status : "PENDING"});
+                    await Order.create({ orderid : order.id, status : "PENDING", userId : req.user._id});
                     return res.status(201).json({order, key_id : rzp.key_id})
                 }
                 catch(err){

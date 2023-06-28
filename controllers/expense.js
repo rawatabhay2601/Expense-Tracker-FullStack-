@@ -62,7 +62,7 @@ exports.getExpenses = async(req,res,next) => {
         const totalExpense = req.user.totalExpense;
 
         // response is an array
-        const expensesPerPage = await Expense.find().skip(offset).limit(limit);
+        const expensesPerPage = await Expense.find({userId: req.user._id}).skip(offset).limit(limit);
         return res.status(201).json({
             success : expensesPerPage,
             ispremium : ispremium,
@@ -110,11 +110,12 @@ exports.deleteExpense = async (req,res,next) => {
 
 // CHECK
 exports.downloadExpense = async (req,res,next) => {
+    
     try{
         const id = req.user._id;
-        const expenses = await Expense.find({ _id:id });
+        const expenses = await Expense.find({ userId : id });
         const stringfiedData = JSON.stringify(expenses);
-        const fileName = `Expenses${req.user.id}/${JSON.stringify(new Date())}.txt`
+        const fileName = `Expenses${req.user._id}/${JSON.stringify(new Date())}.txt`
         const fileUrl = await S3Service.uploadToS3(stringfiedData, fileName);
         req.fileUrl = fileUrl;
         next();
