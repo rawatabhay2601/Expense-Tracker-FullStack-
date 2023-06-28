@@ -142,63 +142,70 @@ window.addEventListener('DOMContentLoaded',async(e) => {
     }
 });
 
-// // FOR ORDERS RAZORPAY
-// document.getElementById('premiumUser').onclick = async(e) => {
+// FOR ORDERS RAZORPAY
+document.getElementById('premiumUser').onclick = async(e) => {
 
-//     const leaderboard = document.getElementById('leaderboard');
-//     const downloadHistory = document.getElementById('downloads-history');
-//     const premiumBtn = document.getElementById('premiumBtn');
-//     const token = localStorage.getItem('id');
-//     const downloadBtn = document.getElementById("premiumDownloadBtn");
+    const leaderboard = document.getElementById('leaderboard');
+    const downloadHistory = document.getElementById('downloads-history');
+    const premiumBtn = document.getElementById('premiumBtn');
+    const token = localStorage.getItem('id');
+    const downloadBtn = document.getElementById("premiumDownloadBtn");
 
-//     const response = await axios.get('http://localhost:3000/purchase/premiumMembership', {
-//         headers : {'Authorization': token}
-//     });
+    const response = await axios.get('http://localhost:3000/purchase/premiumMembership', {
+        headers : {'Authorization': token}
+    });
 
-//     var options = {
-//         'key' : response.data.key_id,
-//         'order_id': response.data.order.id,
-//         'handler' : async function(response){
+    var options = {
+        'key' : response.data.key_id,
+        'order_id': response.data.order.id,
+        'handler' : function(response){
 
-//             await axios.post('http://localhost:3000/purchase/updateTranscationStatus', {
-//                 order_id:options.order_id,
-//                 payment_id: response.razorpay_payment_id,
-//             }, {headers : {'Authorization' : token} });
+            return axios.post('http://localhost:3000/purchase/updateTranscationStatus', {
+                order_id:options.order_id,
+                payment_id: response.razorpay_payment_id,
+            }, {headers : {'Authorization' : token} })
+            .then( () => {
+                // removing premium button
+                premiumBtn.parentElement.remove();
+    
+                //displaying the download button
+                downloadBtn.style = "display:block";
+                //displaying the download button
+                leaderboard.style = "display:block";
+                //displaying the downloads history button
+                downloadHistory.style = "display:block";
+    
+                localStorage.setItem('isPremium','true'); // adding message to the local Storage
+                
+                // setting up an alert
+                return alert('You are a Premium User Now !!');
+            })
+            .catch(err => {
+                console.log(err);
+                return alert('Error : ', err);
+            })
+        }
+    }
 
-//             // removing premium button
-//             premiumBtn.parentElement.remove();
+    const rzp1 = new Razorpay(options);
+    rzp1.open();
+    e.preventDefault(); //why is this used
 
-//             //displaying the download button
-//             downloadBtn.style = "display:block";
-//             //displaying the download button
-//             leaderboard.style = "display:block";
-//             //displaying the downloads history button
-//             downloadHistory.style = "display:block";
+    rzp1.on('payment.')
 
-//             localStorage.setItem('isPremium','true'); // adding message to the local Storage
-            
-//             // setting up an alert
-//             alert('You are a Premium User Now !!');
-//         }
-//     }
-
-//     const rzp1 = new Razorpay(options);
-//     rzp1.open();
-//     e.preventDefault(); //why is this used
-
-//     rzp1.on('payment.failed', async (response) => {
+    rzp1.on('payment.failed', async (response) => {
         
-//         await axios.post('http://localhost:3000/purchase/failedTransaction', {
+        await axios.post('http://localhost:3000/purchase/failedTransaction', {
 
-//             order_id:response.error.metadata.order_id,
-//             payment_id: response.error.metadata.payment_id
+            order_id:response.error.metadata.order_id,
+            payment_id: response.error.metadata.payment_id
 
-//         }, { headers : {'Authorization' : token} });
+        }, { headers : {'Authorization' : token} });
 
-//         alert('Something went wrong while payment!!');
-//         rzp1.close();
-//     });
-// };
+        alert('Something went wrong while payment!!');
+        rzp1.close();
+    });
+};
 
 // creating Rows for the frontend
 function creatingRowsForTable(expense,parentTagRow){

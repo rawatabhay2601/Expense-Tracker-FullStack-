@@ -17,7 +17,7 @@ exports.purchasePremium = async (req,res) => {
             }
             else{
                 try{
-                    await req.user.createOrder({orderid : order.id, status : "PENDING"});
+                    await Order.create({ orderid : order.id, status : "PENDING"});
                     return res.status(201).json({order, key_id : rzp.key_id})
                 }
                 catch(err){
@@ -36,20 +36,28 @@ exports.updateTranscation = async (req,res) => {
     
     try{
         const {payment_id, order_id} = req.body;
-        const order = await Order.findOne({where : {orderid : order_id}});
-        const promise1 = order.update({paymentid: payment_id, status : 'SUCCESSFUL'});
-        const promise2 = req.user.update( {ispremium : true})
-
-        Promise.all([promise1, promise2])
+        
+        // updating the order document
+        const orderPromise = Order.findOneAndUpdate({ orderid : order_id }, { paymentid: payment_id, status: 'SUCCESSFUL'});
+        
+        // updating the user data
+        req.user.ispremium = 'true';
+        const userPromise = req.user.save();
+        // // order and user updating data
+        // order.paymentid = payment_id;
+        // order.status = 'SUCCESSFUL';
+        
+        return Promise.all([orderPromise, userPromise])
         .then( () => {
-            return res.status(202).json({success : true, message : 'Transaction Successful'})
+            return res.status(202).json({success : true, message : 'Transaction Successful'});
         })
         .catch( (err) => {
-            throw new Error(err);
+            return res.status(404).json({message : 'Failed while updating user and order', error: err});
         })
     }
     catch(err){
-        res.status(403).json({message : 'Failed'})
+        console.log(err);
+        res.status(403).json({message : 'Failed', err: err});
     }
 };
 
@@ -57,9 +65,8 @@ exports.failedTranscation = async (req,res) => {
     
     try{
         const {payment_id, order_id} = req.body;
-        const order = await Order.findOne({where : {orderid : order_id}});
-        await order.update({paymentid: payment_id, status : 'FAILED'});
-        return res.status(202).json({success : false, message : 'Transaction Failed'})
+        await Order.findOneAndUpdate({orderid : order_id}, {paymentid: payment_id, status : 'FAILED'});
+        return res.status(202).json({success : false, message : 'Transaction Failed'});
         // Promise.all([promise1, promise2])
         // .then( () => {
         //     return res.status(202).json({success : true, message : 'Transaction Successful'})
@@ -69,6 +76,6 @@ exports.failedTranscation = async (req,res) => {
         // })
     }
     catch(err){
-        res.status(403).json({message : 'Failed'})
+        res.status(403).json({message : 'Failed'});
     }
 };
